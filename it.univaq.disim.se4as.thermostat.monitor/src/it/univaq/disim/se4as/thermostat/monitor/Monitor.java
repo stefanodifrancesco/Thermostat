@@ -3,11 +3,8 @@ package it.univaq.disim.se4as.thermostat.monitor;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.activation.UnsupportedDataTypeException;
-
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
