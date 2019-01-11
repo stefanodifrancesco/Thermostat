@@ -78,8 +78,14 @@ public class SQLManager {
 			connection = DriverManager.getConnection(
 					"jdbc:mysql://" + server + "/" + database + "?" + "user=" + user + "&password=" + password + "");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			try {
+				connection = DriverManager.getConnection(
+						"jdbc:mysql://" + server + "/" + database + "?" + "user=" + user + "&password=" + password + "&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
 		}
 		return connection;
 
