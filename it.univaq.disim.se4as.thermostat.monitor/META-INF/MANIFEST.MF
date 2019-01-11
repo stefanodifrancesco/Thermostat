@@ -6,8 +6,9 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: it.univaq.disim.se4as.thermostat.monitor.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: it.univaq.disim.se4as.thermostat.monitor
-Import-Package: org.osgi.framework;version="1.3.0"
+Import-Package: it.univaq.disim.se4as.thermostat.SQLManager,
+ it.univaq.disim.se4as.thermostat.SQLManager.model,
+ org.osgi.framework;version="1.3.0"
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: library/mysql-connector-java-8.0.13.jar,
- library/org.eclipse.paho.client.mqttv3-1.2.0.jar,
+Bundle-ClassPath: library/org.eclipse.paho.client.mqttv3-1.2.0.jar,
  .

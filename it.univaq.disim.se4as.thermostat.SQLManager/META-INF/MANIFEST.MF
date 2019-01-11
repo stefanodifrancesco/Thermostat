@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SQLManager
+Bundle-SymbolicName: it.univaq.disim.se4as.thermostat.SQLManager
+Bundle-Version: 1.0.0.qualifier
+Automatic-Module-Name: it.univaq.disim.se4as.thermostat.SQLManager
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Import-Package: org.osgi.framework
+Bundle-Activator: it.univaq.disim.se4as.thermostat.SQLManager.Activator
+Export-Package: it.univaq.disim.se4as.thermostat.SQLManager,
+ it.univaq.disim.se4as.thermostat.SQLManager.model
+Bundle-ClassPath: library/mysql-connector-java-8.0.13.jar,
+ .

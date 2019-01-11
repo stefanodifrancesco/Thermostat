@@ -1,5 +1,7 @@
 package it.univaq.disim.se4as.thermostat.monitor;
 
+import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager;
+import it.univaq.disim.se4as.thermostat.SQLManager.model.SensedValue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -47,7 +49,7 @@ public class Monitor implements MqttCallback{
 		System.out.println("Monitor - Copy configuration files to " + context.getBundle().getDataFile("").getAbsolutePath());
 
 		// Get type of sensor and room and server URL
-		File configuration = context.getBundle().getDataFile("Monitor_config.properties");
+		File configuration = context.getBundle().getDataFile("config.properties");
 
 		while (!configuration.exists()) {
 		}
@@ -226,10 +228,11 @@ public class Monitor implements MqttCallback{
 		
 	}*/
 	
-	public void insertDataIntoDB(String topic, Double sensedValue) {
+	public void insertDataIntoDB(String topic, Double value) {
 		String[] topicArray;
-		String room;
-		String sensorType;
+		
+		SensedValue sensedValue= new SensedValue();
+		
 		SQLManager sqlManager = new SQLManager(context);
 		
 		
@@ -238,10 +241,11 @@ public class Monitor implements MqttCallback{
 			
 			topicArray = topic.split(delimiter);
 			
-			room=topicArray[1];
-			sensorType=topicArray[2];
+			sensedValue.setRoom(topicArray[1]);
+			sensedValue.setSensorType(topicArray[2]);
+			sensedValue.setValue(value);
 			
-			sqlManager.insertSensedValue(room, sensorType, sensedValue);
+			sqlManager.insertSensedValue(sensedValue);
 			
 			System.out.println("Interted in the DB");
 			
