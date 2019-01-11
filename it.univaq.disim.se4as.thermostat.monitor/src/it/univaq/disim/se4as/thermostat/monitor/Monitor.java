@@ -10,12 +10,10 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-
-import it.univaq.disim.se4as.thermostat.sensor.api.ISensor;
-import it.univaq.disim.se4as.thermostat.sensor.api.SensorInfo;
 
 public class Monitor implements MqttCallback{
 	//private Boolean active = true;
@@ -88,9 +86,11 @@ public class Monitor implements MqttCallback{
 	
 	public void connect() {
 		
+		MemoryPersistence persistence = new MemoryPersistence();
+		
 		try {
 			
-			mqttClient = new MqttClient("tcp://iot.eclipse.org:1883", "monitorSubscribe");
+			mqttClient = new MqttClient("tcp://localhost:1883", "monitorSubscribe", persistence);
 			mqttClient.setCallback(this);
 			mqttClient.connect();
 			

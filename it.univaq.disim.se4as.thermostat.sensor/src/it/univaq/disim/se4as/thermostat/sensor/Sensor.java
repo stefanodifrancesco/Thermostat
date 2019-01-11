@@ -1,8 +1,5 @@
 package it.univaq.disim.se4as.thermostat.sensor;
 
-import it.univaq.disim.se4as.thermostat.sensor.api.ISensor;
-import it.univaq.disim.se4as.thermostat.sensor.api.SensorInfo;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,17 +13,16 @@ import java.util.concurrent.TimeUnit;
 
 import org.osgi.framework.BundleContext;
 
-public class Sensor implements ISensor {
+public class Sensor {
 	
-	private SensorInfo info;
+	private String sensor_type;
+	private String room;
 	private String server;
 	private String[] sensedValues;
 	private SenderThread send;
 	
 	
-	public Sensor() throws IOException { 
-		info = new SensorInfo();
-	}
+	public Sensor() throws IOException { }
 	
 	public void setConfiguration(BundleContext context) {
 		
@@ -52,8 +48,8 @@ public class Sensor implements ISensor {
 	    	{
 	    		input = new FileInputStream(configuration);
 	    		properties.load(input);
-	    		this.info.setSensorType(properties.getProperty("type"));
-	    		this.info.setRoom(properties.getProperty("room"));
+	    		this.sensor_type = properties.getProperty("type");
+	    		this.room = properties.getProperty("room");
 	    		this.server = properties.getProperty("server");
 	    	}
 	    } catch (IOException ex) {
@@ -96,17 +92,12 @@ public class Sensor implements ISensor {
 	}
 	
 	public void startSending() {		
-		send = new SenderThread(info.getSensorType(), info.getRoom(), server, sensedValues);
+		send = new SenderThread(this.sensor_type, this.room, server, sensedValues);
 		send.start();
 	    System.out.println("Sensor started sending!");
 	}
 	
 	public void stopSending() {
 		send.interrupt();
-	}
-
-	@Override
-	public SensorInfo getSensorInfo() {
-		return info;
 	}
 }
