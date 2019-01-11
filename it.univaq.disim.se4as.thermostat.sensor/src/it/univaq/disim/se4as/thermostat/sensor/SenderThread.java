@@ -44,7 +44,7 @@ public class SenderThread extends Thread {
         			
         			for (int i = 0; i < sensedValues.length; i++) {
         				message.setPayload(sensedValues[i].getBytes());
-        				mqttClient.publish("home/" + this.room, message);
+        				mqttClient.publish("home/" + this.room + "/" + this.sensorType, message);
         				TimeUnit.SECONDS.sleep(1);
         			}
         			

@@ -19,7 +19,7 @@ public class Activator implements BundleActivator {
 		Activator.context = bundleContext;
 		
 		Monitor monitor = new Monitor(context);
-		monitor.start();
+		//monitor.start();
 	}
 
 	/*
