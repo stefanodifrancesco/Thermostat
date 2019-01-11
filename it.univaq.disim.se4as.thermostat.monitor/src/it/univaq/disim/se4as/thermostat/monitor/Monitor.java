@@ -1,7 +1,13 @@
 package it.univaq.disim.se4as.thermostat.monitor;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.stream.events.StartDocument;
 
@@ -20,6 +26,8 @@ public class Monitor implements MqttCallback{
 
 	private MqttClient mqttClient;
 	
+	private String server;
+	
 	/*private List<SensorInfo> sensorInfoListOld = new ArrayList<SensorInfo>();
 	private List<SensorInfo> sensorInfoListNew = new ArrayList<SensorInfo>();*/
 	
@@ -28,9 +36,51 @@ public class Monitor implements MqttCallback{
 	public Monitor(BundleContext context) {
 		this.context = context;
 		
+		setConfiguration(context);
 		
 		connect();
 		subscribe();
+	}
+	
+	public void setConfiguration(BundleContext context) {
+
+		System.out.println("Monitor - Copy configuration files to " + context.getBundle().getDataFile("").getAbsolutePath());
+
+		// Get type of sensor and room and server URL
+		File configuration = context.getBundle().getDataFile("Monitor_config.properties");
+
+		while (!configuration.exists()) {
+		}
+
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e1) {
+			System.out.println("Sleep interrupted");
+		}
+
+		Properties properties = new Properties();
+		InputStream input = null;
+
+		try {
+			if (configuration != null) {
+				input = new FileInputStream(configuration);
+				properties.load(input);
+				
+				this.server = properties.getProperty("server");
+				
+			}
+			
+		} catch (IOException ex) {
+			System.out.println("IOException reading configuration file");
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					System.out.println("IOException closing configuration file");
+				}
+			}
+		}
 	}
 	
 	/*@Override
@@ -90,7 +140,7 @@ public class Monitor implements MqttCallback{
 		
 		try {
 			
-			mqttClient = new MqttClient("tcp://localhost:1883", "monitorSubscribe", persistence);
+			mqttClient = new MqttClient("tcp://"+ server, "monitorSubscribe", persistence);
 			mqttClient.setCallback(this);
 			mqttClient.connect();
 			

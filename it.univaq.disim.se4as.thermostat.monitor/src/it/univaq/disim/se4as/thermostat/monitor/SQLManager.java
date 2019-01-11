@@ -29,7 +29,7 @@ public class SQLManager {
 		System.out.println("SQLManager - Copy configuration files to " + context.getBundle().getDataFile("").getAbsolutePath());
 
 		// Get type of sensor and room and server URL
-		File configuration = context.getBundle().getDataFile("config.properties");
+		File configuration = context.getBundle().getDataFile("SQL_config.properties");
 
 		while (!configuration.exists()) {
 		}
