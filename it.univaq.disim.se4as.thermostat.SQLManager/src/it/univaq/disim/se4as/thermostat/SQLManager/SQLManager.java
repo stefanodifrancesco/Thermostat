@@ -25,6 +25,12 @@ public class SQLManager {
 	private String user;
 	private String password;
 	
+	public enum Internval{
+		LAST,
+		LAST_WEEK,
+		ALL
+	}
+	
 	public SQLManager(BundleContext context) {
 		setConfiguration(context);
 	}
@@ -187,20 +193,51 @@ public class SQLManager {
 		return sensorTypes;
 		
 	}
+
 	
-	public List<SensedValue> getSensedData(String room, String sensorType) {
+	public List<SensedValue> getSensedData(String room, String sensorType, Internval internval) {
 		List<SensedValue> sensedValues = new ArrayList<SensedValue>();
 		
 		Connection connection = connect();
+		
+		String query;
 
 		// PreparedStatements can use variables and are more efficient
 		PreparedStatement preparedStatement;
 		try {
-			preparedStatement = connection.
-					prepareStatement("SELECT timestamp, value, sensor_type, room " + 
-										" FROM se4as.sensed_values "+
-											"WHERE room = ? AND sensor_type = ?");
+			
+			
+			query = "SELECT timestamp, value, sensor_type, room " + 
+					" FROM se4as.sensed_values " +
+					"WHERE room = ? AND sensor_type = ?";
+			
+			
+			switch (internval) {
+			case ALL:
+				
+				
+				
+				break;
+				
+			case LAST:
+				
+				query += " ORDER BY timestamp DESC limit 0,1";	
+				
+				break;
+				
+			case LAST_WEEK:
+				
+				query += " ORDER BY timestamp DESC limit 0,10";
+				
+				break;
 
+			default:
+				break;
+			}			
+			
+			preparedStatement = connection.
+					prepareStatement(query);
+			
 			// Parameters start with 1
 			preparedStatement.setString(1, room);
 			preparedStatement.setString(2, sensorType);
