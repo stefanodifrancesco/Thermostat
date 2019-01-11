@@ -154,7 +154,6 @@ public class SQLManager {
 		
 	}
 	
-	
 	public List<String> getSensorTypes() {
 		List<String> sensorTypes = new ArrayList<String>();
 		

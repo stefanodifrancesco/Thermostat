@@ -233,7 +233,28 @@ public class Monitor implements MqttCallback{
 		
 		SensedValue sensedValue= new SensedValue();
 		
-		SQLManager sqlManager = new SQLManager(context);
+		SQLManager sqlManager = null;
+		
+		ServiceReference<?>[] refs;
+		
+		try {
+			refs = context.getAllServiceReferences(SQLManager.class.getName(), null);
+		
+			if (refs != null) {
+				
+					if (refs[0] != null) {
+						SQLManager manager = (SQLManager) context.getService(refs[0]);
+						if (manager != null) {
+							sqlManager = manager;
+						}
+	
+					}
+			}
+		
+		} catch (InvalidSyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		
 		try {
@@ -245,7 +266,9 @@ public class Monitor implements MqttCallback{
 			sensedValue.setSensorType(topicArray[2]);
 			sensedValue.setValue(value);
 			
-			sqlManager.insertSensedValue(sensedValue);
+			if (sqlManager != null) {
+				sqlManager.insertSensedValue(sensedValue);
+			}			
 			
 			System.out.println("Interted in the DB");
 			
