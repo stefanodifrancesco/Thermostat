@@ -106,6 +106,8 @@ public class SQLManager {
 			preparedStatement.setDouble(3, sensedValue);
 
 			preparedStatement.executeUpdate();
+			
+			connection.close();
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
