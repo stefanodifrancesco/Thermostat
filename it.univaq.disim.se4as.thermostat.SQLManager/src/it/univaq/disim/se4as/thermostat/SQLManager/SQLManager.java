@@ -25,7 +25,7 @@ public class SQLManager {
 	private String user;
 	private String password;
 	
-	public enum Internval{
+	public enum Interval{
 		LAST,
 		LAST_WEEK,
 		ALL
@@ -195,7 +195,7 @@ public class SQLManager {
 	}
 
 	
-	public List<SensedValue> getSensedData(String room, String sensorType, Internval internval) {
+	public List<SensedValue> getSensedData(String room, String sensorType, Interval internval) {
 		List<SensedValue> sensedValues = new ArrayList<SensedValue>();
 		
 		Connection connection = connect();
