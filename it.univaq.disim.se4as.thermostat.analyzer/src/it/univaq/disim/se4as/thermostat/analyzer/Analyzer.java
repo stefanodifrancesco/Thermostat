@@ -24,8 +24,6 @@ public class Analyzer {
 	
 	public Analyzer(BundleContext context) {
 		this.context = context;
-		setConfiguration(context);
-		
 	}
 	
 	public void setConfiguration(BundleContext context) {

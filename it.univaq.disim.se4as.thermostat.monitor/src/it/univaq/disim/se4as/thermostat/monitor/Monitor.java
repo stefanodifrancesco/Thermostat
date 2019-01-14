@@ -270,7 +270,7 @@ public class Monitor implements MqttCallback{
 				sqlManager.insertSensedValue(sensedValue);
 			}			
 			
-			System.out.println("Interted in the DB");
+			//System.out.println("Interted in the DB");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
