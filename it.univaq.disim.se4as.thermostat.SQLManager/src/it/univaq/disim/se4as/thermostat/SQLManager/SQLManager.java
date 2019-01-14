@@ -209,7 +209,8 @@ public class SQLManager {
 			
 			query = "SELECT timestamp, value, sensor_type, room " + 
 					" FROM se4as.sensed_values " +
-					"WHERE room = ? AND sensor_type = ?";
+					"WHERE room = ? AND sensor_type = ? "
+					+ " ORDER BY timestamp DESC ";
 			
 			
 			switch (internval) {
@@ -221,13 +222,13 @@ public class SQLManager {
 				
 			case LAST:
 				
-				query += " ORDER BY timestamp DESC limit 0,1";	
+				query += " limit 0,1";	
 				
 				break;
 				
 			case LAST_WEEK:
 				
-				query += " ORDER BY timestamp DESC limit 0,10";
+				query += " limit 0,10";
 				
 				break;
 
