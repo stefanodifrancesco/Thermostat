@@ -34,6 +34,7 @@ public class SenderThread extends Thread {
 				mqttClient.connect();
 			} catch (MqttException e) {
 				e.printStackTrace();
+				return;
 			}
     		
     		while (!Thread.interrupted())
@@ -49,10 +50,11 @@ public class SenderThread extends Thread {
         			}
         			
         		} catch (MqttException e) {
-        			System.out.println("You are here");
+        			System.out.println(sensorType + "sensor of " + room + " cannot send data");
+        			TimeUnit.SECONDS.sleep(1);
         		}
     			
-    			System.out.println("Not receiving data from " + sensorType + " of " + room);
+    			
 	    		
             }
     		return;		

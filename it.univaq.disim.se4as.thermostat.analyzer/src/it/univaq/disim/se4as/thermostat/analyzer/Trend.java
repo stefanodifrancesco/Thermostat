@@ -3,7 +3,7 @@ package it.univaq.disim.se4as.thermostat.analyzer;
 public class Trend {
 	
 	private String room;
-	private int slope;
+	private double slope;
 	
 	public Trend() {
 		super();
@@ -23,12 +23,12 @@ public class Trend {
 		this.room = room;
 	}
 	
-	public int getSlope() {
+	public double getSlope() {
 		return slope;
 	}
 	
-	public void setSlope(int slope) {
-		this.slope = slope;
+	public void setSlope(double slope2) {
+		this.slope = slope2;
 	}
 	
 

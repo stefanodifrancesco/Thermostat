@@ -98,25 +98,17 @@ public class CheckingThread extends Thread {
 			trend.setRoom(room);
 
 			double slope = 0;
-	      
-			int number_of_sample = 10;
+		
+			int t4 = 0;
+			int t1 = 10;
+			double T4 = values.get(t4).getValue();
+			double T1 = values.get(t1).getValue();
+			int deltaTime = t1 - t4;
 			
-			double c = 0;
-			int a = 0;
-			double b = 0;
-			double d = 0;
-			for (int i = 0; i < number_of_sample; i++) {
-				
-				c += i* values.get(i).getValue();
-				a++;
-				b += values.get(i).getValue();
-				d += values.get(i).getValue()*values.get(i).getValue();
-			}
-			
-			double result = ((number_of_sample * c) - (a * b)) / ((number_of_sample * d) - Math.sqrt(a));
+			slope = (T4 - T1) / deltaTime;
 	        
-	        //trend.setSlope(slope);
-	        System.out.println("slope" + result);
+	        trend.setSlope(slope);
+	        System.out.println("slope" + slope);
 			trends.add(trend);
 		}
 		
@@ -134,7 +126,7 @@ public class CheckingThread extends Thread {
 					List<String> sensor_types = sqlManager.getSensorTypes();
 
 					// thresholds checking
-					//List<Alert> alerts = checkThresholds(rooms, sensor_types);
+					List<Alert> alerts = checkThresholds(rooms, sensor_types);
 					
 					// temperature trend
 					List<Trend> trends = checkTrends(rooms, sensor_types);
