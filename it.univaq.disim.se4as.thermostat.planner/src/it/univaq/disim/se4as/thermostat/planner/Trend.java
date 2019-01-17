@@ -1,4 +1,4 @@
-package it.univaq.disim.se4as.thermostat.analyzer;
+package it.univaq.disim.se4as.thermostat.planner;
 
 public class Trend {
 	

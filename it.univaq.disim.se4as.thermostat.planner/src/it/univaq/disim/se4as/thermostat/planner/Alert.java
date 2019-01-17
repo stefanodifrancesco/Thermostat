@@ -1,4 +1,4 @@
-package it.univaq.disim.se4as.thermostat.analyzer;
+package it.univaq.disim.se4as.thermostat.planner;
 
 public class Alert {
 	
@@ -19,31 +19,31 @@ public class Alert {
 		this.airQualityAlert = airQualityAlert;
 		this.presence = presence;
 	}
-	
+
 	public String getRoom() {
 		return room;
 	}
-	
+
 	public void setRoom(String room) {
 		this.room = room;
 	}
-	
+
 	public boolean isTemperatureAlert() {
 		return temperatureAlert;
 	}
-	
+
 	public void setTemperatureAlert(boolean temperatureAlert) {
 		this.temperatureAlert = temperatureAlert;
 	}
-	
+
 	public boolean isAirQualityAlert() {
 		return airQualityAlert;
 	}
-	
+
 	public void setAirQualityAlert(boolean airQualityAlert) {
 		this.airQualityAlert = airQualityAlert;
 	}
-	
+
 	public boolean isPresence() {
 		return presence;
 	}
@@ -51,4 +51,5 @@ public class Alert {
 	public void setPresence(boolean presence) {
 		this.presence = presence;
 	}
+	
 }

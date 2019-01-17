@@ -6,6 +6,8 @@ import java.util.List;
 import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager;
 import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager.Interval;
 import it.univaq.disim.se4as.thermostat.SQLManager.model.SensedValue;
+import it.univaq.disim.se4as.thermostat.planner.Alert;
+import it.univaq.disim.se4as.thermostat.planner.Trend;
 
 public class CheckingThread extends Thread {
 
