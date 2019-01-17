@@ -12,6 +12,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager;
+import it.univaq.disim.se4as.thermostat.planner.Planner;
 
 public class Analyzer {
 	
@@ -67,7 +68,7 @@ public class Analyzer {
 		}
 	}
 
-	public void startCheckingThresholds() {
+	public SQLManager getSQLmanagerInstance() {
 		
 		SQLManager sqlManager = null;
 		
@@ -92,7 +93,40 @@ public class Analyzer {
 			e1.printStackTrace();
 		}
 		
-		check = new CheckingThread(sqlManager, this.living_area_temperature_threshold, this.sleeping_area_temperature_threshold, this.toiets_temperature_threshold);
+		return sqlManager;
+	}
+	
+	public Planner getPlannerInstance() {
+		
+		Planner plannerInstance = null;
+		
+		ServiceReference<?>[] refs;
+		
+		try {
+			refs = context.getAllServiceReferences(Planner.class.getName(), null);
+		
+			if (refs != null) {
+				
+					if (refs[0] != null) {
+						Planner planner = (Planner) context.getService(refs[0]);
+						if (planner != null) {
+							plannerInstance = planner;
+						}
+	
+					}
+			}
+		
+		} catch (InvalidSyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		return plannerInstance;
+	}
+
+	public void startCheckingThresholds() {
+		
+		check = new CheckingThread(getSQLmanagerInstance(), getPlannerInstance(), this.living_area_temperature_threshold, this.sleeping_area_temperature_threshold, this.toiets_temperature_threshold);
 		check.start();
 	    System.out.println("Analyzer started analyzing!");
 	}

@@ -7,6 +7,7 @@ import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager;
 import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager.Interval;
 import it.univaq.disim.se4as.thermostat.SQLManager.model.SensedValue;
 import it.univaq.disim.se4as.thermostat.planner.Alert;
+import it.univaq.disim.se4as.thermostat.planner.Planner;
 import it.univaq.disim.se4as.thermostat.planner.Trend;
 
 public class CheckingThread extends Thread {
@@ -18,13 +19,15 @@ public class CheckingThread extends Thread {
 	private Double air_quality_threshold = 1.0;
 
 	private SQLManager sqlManager;
+	private Planner planner;
 
-	public CheckingThread(SQLManager manager, Double living_area_temperature_threshold,
+	public CheckingThread(SQLManager manager, Planner planner, Double living_area_temperature_threshold,
 			Double sleeping_area_temperature_thershold, Double toiets_temperature_threshold) {
 		this.living_area_temperature_threshold = living_area_temperature_threshold;
 		this.sleeping_area_temperature_threshold = sleeping_area_temperature_thershold;
 		this.toilets_temperature_threshold = toiets_temperature_threshold;
 		this.sqlManager = manager;
+		this.planner = planner;
 	}
 
 	private List<Alert> checkThresholds(List<String> rooms, List<String> sensor_types) {
@@ -34,15 +37,24 @@ public class CheckingThread extends Thread {
 		for (String room : rooms) {
 
 			Alert alert = new Alert();
-
-			List<SensedValue> qualityValues = sqlManager.getSensedData(room, "airQuality", Interval.LAST);
-			if (qualityValues.get(0).getValue() < air_quality_threshold) {
-				alert.setAirQualityAlert(true);
+			alert.setRoom(room);
+			
+			try {
+				List<SensedValue> qualityValues = sqlManager.getSensedData(room, "airQuality", Interval.LAST);
+				if (qualityValues.get(0).getValue() < air_quality_threshold) {
+					alert.setAirQualityAlert(true);
+				}
+			} catch (Exception e) {
+				System.out.println("No air quality data");
 			}
 			
-			List<SensedValue> presenceValues = sqlManager.getSensedData(room, "presence", Interval.LAST);
-			if (presenceValues.get(0).getValue() > 0) {
-				alert.setPresence(true);
+			try {
+				List<SensedValue> presenceValues = sqlManager.getSensedData(room, "presence", Interval.LAST);
+				if (presenceValues.get(0).getValue() > 0) {
+					alert.setPresence(true);
+				}
+			} catch (Exception e) {
+				System.out.println("No presence data");
 			}
 
 			if (room.contains("livingRoom")) {
@@ -132,6 +144,8 @@ public class CheckingThread extends Thread {
 					
 					// temperature trend
 					List<Trend> trends = checkTrends(rooms, sensor_types);
+					
+					planner.receiveAlerts(alerts);
 
 					Thread.sleep(10000);
 				}
