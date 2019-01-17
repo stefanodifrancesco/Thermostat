@@ -21,8 +21,9 @@ public class Activator implements BundleActivator {
 		Activator.context = bundleContext;
 		
 		Analyzer analyzer = new Analyzer(bundleContext);
-		analyzer.setConfiguration(bundleContext);
-		analyzer.startCheckingThresholds();
+		/*analyzer.setConfiguration(bundleContext);
+		analyzer.startCheckingThresholds();*/
+		analyzer.startAnalysis();
 		
 		context.registerService(Analyzer.class.getName(), analyzer , null);
 		

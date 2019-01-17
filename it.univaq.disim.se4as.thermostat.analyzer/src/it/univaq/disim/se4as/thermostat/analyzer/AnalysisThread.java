@@ -6,31 +6,34 @@ import java.util.List;
 import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager;
 import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager.Interval;
 import it.univaq.disim.se4as.thermostat.SQLManager.model.SensedValue;
-import it.univaq.disim.se4as.thermostat.planner.Alert;
 import it.univaq.disim.se4as.thermostat.planner.Planner;
-import it.univaq.disim.se4as.thermostat.planner.Trend;
 
-public class CheckingThread extends Thread {
+public class AnalysisThread extends Thread {
 
-	private Double living_area_temperature_threshold;
+	/*private Double living_area_temperature_threshold;
 	private Double sleeping_area_temperature_threshold;
 	private Double toilets_temperature_threshold;
 
-	private Double air_quality_threshold = 1.0;
+	private Double air_quality_threshold = 1.0;*/
 
 	private SQLManager sqlManager;
 	private Planner planner;
 
-	public CheckingThread(SQLManager manager, Planner planner, Double living_area_temperature_threshold,
+	/*public AnalysisThread(SQLManager manager, Planner planner, Double living_area_temperature_threshold,
 			Double sleeping_area_temperature_thershold, Double toiets_temperature_threshold) {
 		this.living_area_temperature_threshold = living_area_temperature_threshold;
 		this.sleeping_area_temperature_threshold = sleeping_area_temperature_thershold;
 		this.toilets_temperature_threshold = toiets_temperature_threshold;
 		this.sqlManager = manager;
 		this.planner = planner;
+	}*/
+	
+	public AnalysisThread(SQLManager manager, Planner planner) {
+		this.sqlManager = manager;
+		this.planner = planner;
 	}
 
-	private List<Alert> checkThresholds(List<String> rooms, List<String> sensor_types) {
+	/*private List<Alert> checkThresholds(List<String> rooms, List<String> sensor_types) {
 
 		List<Alert> alerts = new ArrayList<Alert>();
 
@@ -98,17 +101,17 @@ public class CheckingThread extends Thread {
 		}
 		
 		return alerts;
-	}
+	}*/
 
-	private List<Trend> checkTrends(List<String> rooms, List<String> sensor_types) {
+	private List<TemperatureTrend> calculateTrends(List<String> rooms) {
 
-		List<Trend> trends = new ArrayList<Trend>();
+		List<TemperatureTrend> trends = new ArrayList<TemperatureTrend>();
 
 		for (String room : rooms) {
 
 			List<SensedValue> values = sqlManager.getSensedData(room, "temperature", Interval.ALL);
 
-			Trend trend = new Trend();
+			TemperatureTrend trend = new TemperatureTrend();
 			trend.setRoom(room);
 
 			double slope = 0;
@@ -129,6 +132,25 @@ public class CheckingThread extends Thread {
 		return trends;
 	}
 	
+	private List<PresencePrediction> predictPresence(List<String> rooms) {
+
+		List<PresencePrediction> presencePredictions = new ArrayList<PresencePrediction>();
+
+		for (String room : rooms) {
+
+			List<SensedValue> values = sqlManager.getSensedData(room, "presence", Interval.ALL);
+
+			PresencePrediction presencePrediction = new PresencePrediction();
+			presencePrediction.setRoom(room);
+
+			/* */
+			
+			
+		}
+		
+		return presencePredictions;
+	}
+	
 	@Override
 	public void run() {
 
@@ -137,15 +159,17 @@ public class CheckingThread extends Thread {
 			while (!Thread.interrupted()) {
 				while (true) {
 					List<String> rooms = sqlManager.getRooms();
-					List<String> sensor_types = sqlManager.getSensorTypes();
+					/*List<String> sensor_types = sqlManager.getSensorTypes();*/
 
 					// thresholds checking
-					List<Alert> alerts = checkThresholds(rooms, sensor_types);
+					/*List<Alert> alerts = checkThresholds(rooms, sensor_types);*/
 					
 					// temperature trend
-					List<Trend> trends = checkTrends(rooms, sensor_types);
+					List<TemperatureTrend> temperatureTrends = calculateTrends(rooms);
+					//presence prediction
+					List<PresencePrediction> presencePredictions = predictPresence(rooms)
 					
-					planner.receiveAlerts(alerts);
+					planner.receiveTrends(temperatureTrends);
 
 					Thread.sleep(10000);
 				}
