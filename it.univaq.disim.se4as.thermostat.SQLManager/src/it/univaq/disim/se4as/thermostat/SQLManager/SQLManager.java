@@ -348,5 +348,42 @@ public class SQLManager {
 		return presencePredictions;
 
 	}
+	
+	public void insertPresenceHistory(PresencePrediction presencePrediction) {
+		Connection connection = connect();
+
+		// PreparedStatements can use variables and are more efficient
+		PreparedStatement preparedStatement;
+		try {
+			
+			preparedStatement = connection
+					.prepareStatement("truncate table se4as.presences ");
+			
+			preparedStatement.executeUpdate();
+			
+			preparedStatement = connection
+					.prepareStatement("INSERT INTO presences " + 
+							"(day, " + 
+							"start, " + 
+							"end, " + 
+							"room) " + 
+							"VALUES " + 
+							"(?, ?, ?, ?);");
+
+			// Parameters start with 1
+			preparedStatement.setString(1, presencePrediction.getDay());
+			preparedStatement.setTimestamp(2, presencePrediction.getStartTime());
+			preparedStatement.setTimestamp(3, presencePrediction.getEndTime());
+			preparedStatement.setString(2, presencePrediction.getRoom());
+
+			preparedStatement.executeUpdate();
+
+			connection.close();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }
