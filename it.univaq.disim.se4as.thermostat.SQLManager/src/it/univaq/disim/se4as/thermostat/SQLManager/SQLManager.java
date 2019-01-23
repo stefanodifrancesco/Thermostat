@@ -272,7 +272,7 @@ public class SQLManager {
 
 			query = "SELECT timestamp, value, sensor_type, room " + " FROM se4as.sensed_values "
 					+ "WHERE sensor_type = 'presence' " + " AND room = ? " + " AND DAYNAME(timestamp) = ? "
-					+ " AND timestamp BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW();" + " ORDER BY timestamp DESC ";
+					+ " AND timestamp BETWEEN DATE_SUB(NOW(), INTERVAL 14 DAY) AND NOW();" + " ORDER BY timestamp DESC ";
 
 			preparedStatement = connection.prepareStatement(query);
 
