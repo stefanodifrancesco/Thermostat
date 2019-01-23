@@ -9,7 +9,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -272,7 +271,7 @@ public class SQLManager {
 
 			query = "SELECT timestamp, value, sensor_type, room " + " FROM se4as.sensed_values "
 					+ "WHERE sensor_type = 'presence' " + " AND room = ? " + " AND DAYNAME(timestamp) = ? "
-					+ " AND timestamp BETWEEN DATE_SUB(NOW(), INTERVAL 14 DAY) AND NOW();" + " ORDER BY timestamp DESC ";
+					+ " AND timestamp BETWEEN DATE_SUB(NOW(), INTERVAL 14 DAY) AND NOW()" + " ORDER BY timestamp DESC ";
 
 			preparedStatement = connection.prepareStatement(query);
 
@@ -349,10 +348,9 @@ public class SQLManager {
 
 	}
 	
-	public void insertPresenceHistory(PresencePrediction presencePrediction) {
+	public void clearPresenceHistory() {
 		Connection connection = connect();
 
-		// PreparedStatements can use variables and are more efficient
 		PreparedStatement preparedStatement;
 		try {
 			
@@ -360,6 +358,20 @@ public class SQLManager {
 					.prepareStatement("truncate table se4as.presences ");
 			
 			preparedStatement.executeUpdate();
+			connection.close();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void insertPresenceHistory(PresencePrediction presencePrediction) {
+		Connection connection = connect();
+
+		// PreparedStatements can use variables and are more efficient
+		PreparedStatement preparedStatement;
+		try {
 			
 			preparedStatement = connection
 					.prepareStatement("INSERT INTO presences " + 
@@ -374,7 +386,7 @@ public class SQLManager {
 			preparedStatement.setString(1, presencePrediction.getDay());
 			preparedStatement.setTimestamp(2, presencePrediction.getStartTime());
 			preparedStatement.setTimestamp(3, presencePrediction.getEndTime());
-			preparedStatement.setString(2, presencePrediction.getRoom());
+			preparedStatement.setString(4, presencePrediction.getRoom());
 
 			preparedStatement.executeUpdate();
 
