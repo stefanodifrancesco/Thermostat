@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -29,6 +30,16 @@ public class SQLManager {
 		LAST,
 		LAST_WEEK,
 		ALL
+	}
+	
+	public enum DayOfWeek{
+		monday,
+		tuesday,
+		wednesday,
+		thursday,
+		friday,
+		saturday,
+		sunday
 	}
 	
 	public SQLManager(BundleContext context) {
@@ -268,4 +279,56 @@ public class SQLManager {
 		
 	}
 
+	public List<SensedValue> getPresenceData(String room, DayOfWeek dayOfWeek) {
+		List<SensedValue> sensedValues = new ArrayList<SensedValue>();
+		
+		Connection connection = connect();
+		
+		String query;
+
+		// PreparedStatements can use variables and are more efficient
+		PreparedStatement preparedStatement;
+		try {
+			
+			
+			query = "SELECT timestamp, value, sensor_type, room " + 
+					" FROM se4as.sensed_values " +
+					"WHERE sensor_type = 'presence' " +
+					" AND room = ? " +
+					" AND DAYNAME(timestamp) = ? " +
+					" ORDER BY timestamp DESC ";
+			
+			
+			preparedStatement = connection.
+					prepareStatement(query);
+			
+			// Parameters start with 1
+			preparedStatement.setString(1, room);
+			preparedStatement.setString(2, dayOfWeek.toString());
+			
+			ResultSet rs;
+			
+			 rs = preparedStatement.executeQuery();
+	            while ( rs.next() ) {
+	            	SensedValue sensedValue = new SensedValue();
+	                sensedValue.setTimestamp(rs.getTimestamp("timestamp"));
+	                sensedValue.setSensorType(rs.getString("sensor_type"));
+	                sensedValue.setValue(rs.getDouble("value"));
+	                sensedValue.setRoom(rs.getString("room"));
+	                
+	                sensedValues.add(sensedValue);
+	                
+	            }
+	         
+			connection.close();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return sensedValues;
+		
+	}
+	
 }
