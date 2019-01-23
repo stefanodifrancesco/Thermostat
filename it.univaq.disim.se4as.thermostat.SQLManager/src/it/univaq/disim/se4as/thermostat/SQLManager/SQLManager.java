@@ -296,6 +296,7 @@ public class SQLManager {
 					"WHERE sensor_type = 'presence' " +
 					" AND room = ? " +
 					" AND DAYNAME(timestamp) = ? " +
+					" AND timestamp BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW();" +
 					" ORDER BY timestamp DESC ";
 			
 			
