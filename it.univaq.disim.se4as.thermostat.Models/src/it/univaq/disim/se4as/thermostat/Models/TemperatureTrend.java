@@ -1,16 +1,13 @@
-package it.univaq.disim.se4as.thermostat.analyzer.models;
+package it.univaq.disim.se4as.thermostat.Models;
 
 public class TemperatureTrend {
 	
 	private String room;
 	private double slope;
 	
-	public TemperatureTrend() {
-		super();
-	}
+	public TemperatureTrend() {	}
 	
 	public TemperatureTrend(String room, int slope) {
-		super();
 		this.room = room;
 		this.slope = slope;
 	}

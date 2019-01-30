@@ -1,4 +1,4 @@
-package it.univaq.disim.se4as.thermostat.SQLManager.model;
+package it.univaq.disim.se4as.thermostat.Models;
 
 import java.sql.Timestamp;
 

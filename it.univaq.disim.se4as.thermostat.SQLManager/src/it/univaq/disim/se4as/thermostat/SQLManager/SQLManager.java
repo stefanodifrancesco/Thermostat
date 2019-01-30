@@ -1,5 +1,7 @@
 package it.univaq.disim.se4as.thermostat.SQLManager;
 
+import it.univaq.disim.se4as.thermostat.Models.PresencePrediction;
+import it.univaq.disim.se4as.thermostat.Models.SensedValue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,9 +17,6 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.osgi.framework.BundleContext;
-
-import it.univaq.disim.se4as.thermostat.SQLManager.model.PresencePrediction;
-import it.univaq.disim.se4as.thermostat.SQLManager.model.SensedValue;
 
 public class SQLManager {
 
@@ -192,7 +191,7 @@ public class SQLManager {
 
 	}
 
-	public List<SensedValue> getSensedData(String room, String sensorType, Interval internval) {
+	public List<SensedValue> getSensedData(String room, String sensorType, Interval interval) {
 		List<SensedValue> sensedValues = new ArrayList<SensedValue>();
 
 		Connection connection = connect();
@@ -206,7 +205,7 @@ public class SQLManager {
 			query = "SELECT timestamp, value, sensor_type, room " + " FROM se4as.sensed_values "
 					+ "WHERE room = ? AND sensor_type = ? " + " ORDER BY timestamp DESC ";
 
-			switch (internval) {
+			switch (interval) {
 			case ALL:
 
 				break;
@@ -258,7 +257,7 @@ public class SQLManager {
 
 	}
 
-	public List<SensedValue> getPresenceData(String room, DayOfWeek dayOfWeek) {
+	public List<SensedValue> getPresenceDataForPrediction(String room, DayOfWeek dayOfWeek) {
 		List<SensedValue> sensedValues = new ArrayList<SensedValue>();
 
 		Connection connection = connect();

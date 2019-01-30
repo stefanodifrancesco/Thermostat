@@ -72,7 +72,7 @@ public class Analyzer {
 
 		return plannerInstance;
 	}
-
+	
 	public void startAnalysis() {
 
 		analysisThread = new AnalysisThread(getSQLmanagerInstance(), getPlannerInstance());

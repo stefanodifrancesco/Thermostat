@@ -1,17 +1,13 @@
 package it.univaq.disim.se4as.thermostat.monitor;
 
+import it.univaq.disim.se4as.thermostat.Models.SensedValue;
 import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager;
-import it.univaq.disim.se4as.thermostat.SQLManager.model.SensedValue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
-import javax.xml.stream.events.StartDocument;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;

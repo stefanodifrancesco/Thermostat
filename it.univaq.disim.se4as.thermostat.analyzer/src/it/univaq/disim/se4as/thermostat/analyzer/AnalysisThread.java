@@ -4,12 +4,12 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.univaq.disim.se4as.thermostat.Models.PresencePrediction;
+import it.univaq.disim.se4as.thermostat.Models.SensedValue;
+import it.univaq.disim.se4as.thermostat.Models.TemperatureTrend;
 import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager;
 import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager.DayOfWeek;
 import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager.Interval;
-import it.univaq.disim.se4as.thermostat.SQLManager.model.PresencePrediction;
-import it.univaq.disim.se4as.thermostat.SQLManager.model.SensedValue;
-import it.univaq.disim.se4as.thermostat.analyzer.models.TemperatureTrend;
 import it.univaq.disim.se4as.thermostat.planner.Planner;
 
 public class AnalysisThread extends Thread {
@@ -58,7 +58,7 @@ public class AnalysisThread extends Thread {
 		for (String room : rooms) {
 			for (SQLManager.DayOfWeek day : DayOfWeek.values()) {
 				
-				List<SensedValue> values = sqlManager.getPresenceData(room, day);
+				List<SensedValue> values = sqlManager.getPresenceDataForPrediction(room, day);
 				
 				if (values.size() > 0) {
 					presencePredictions.addAll(predictIntervals(values, room, day));
@@ -119,15 +119,18 @@ public class AnalysisThread extends Thread {
 				while (true) {
 					List<String> rooms = sqlManager.getRooms();
 
-					// temperature trend
-					List<TemperatureTrend> temperatureTrends = calculateTrends(rooms);
-
+					
 					// presence prediction
 					sqlManager.clearPresenceHistory();
 					for (PresencePrediction prediction : predictPresence(rooms)) {
 						sqlManager.insertPresenceHistory(prediction);
 					}
 
+					// temperature trend
+					List<TemperatureTrend> temperatureTrends = calculateTrends(rooms);
+					planner.receiveTrends(temperatureTrends);
+					planner.startPlanning();
+					
 					Thread.sleep(10000);
 				}
 
