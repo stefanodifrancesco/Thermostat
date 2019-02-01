@@ -30,7 +30,7 @@ public class SQLManager {
 	}
 
 	public enum DayOfWeek {
-		monday, tuesday, wednesday, thursday, friday, saturday, sunday
+		sunday, monday, tuesday, wednesday, thursday, friday, saturday
 	}
 
 	public SQLManager(BundleContext context) {
@@ -346,16 +346,15 @@ public class SQLManager {
 		return presencePredictions;
 
 	}
-	
+
 	public void clearPresenceHistory() {
 		Connection connection = connect();
 
 		PreparedStatement preparedStatement;
 		try {
-			
-			preparedStatement = connection
-					.prepareStatement("truncate table se4as.presences ");
-			
+
+			preparedStatement = connection.prepareStatement("truncate table se4as.presences ");
+
 			preparedStatement.executeUpdate();
 			connection.close();
 
@@ -364,22 +363,16 @@ public class SQLManager {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void insertPresenceHistory(PresencePrediction presencePrediction) {
 		Connection connection = connect();
 
 		// PreparedStatements can use variables and are more efficient
 		PreparedStatement preparedStatement;
 		try {
-			
-			preparedStatement = connection
-					.prepareStatement("INSERT INTO presences " + 
-							"(day, " + 
-							"start, " + 
-							"end, " + 
-							"room) " + 
-							"VALUES " + 
-							"(?, ?, ?, ?);");
+
+			preparedStatement = connection.prepareStatement(
+					"INSERT INTO presences " + "(day, " + "start, " + "end, " + "room) " + "VALUES " + "(?, ?, ?, ?);");
 
 			// Parameters start with 1
 			preparedStatement.setString(1, presencePrediction.getDay());

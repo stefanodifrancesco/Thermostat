@@ -4,7 +4,13 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Properties;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 
 import javax.swing.tree.TreeCellRenderer;
@@ -21,9 +27,13 @@ import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager.Interval;
 
 public class Planner {
 
-	BundleContext context;
-	SQLManager sqlManager;
-	List<TemperatureTrend> trends;
+	private BundleContext context;
+	private SQLManager sqlManager;
+	private List<TemperatureTrend> trends;
+
+	private Double living_area_temperature_threshold;
+	private Double sleeping_area_temperature_threshold;
+	private Double toilets_temperature_threshold;
 
 	public Planner(BundleContext context) {
 		this.context = context;
@@ -65,8 +75,7 @@ public class Planner {
 	public void startPlanning() {
 
 		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-		int day = calendar.get(Calendar.DAY_OF_WEEK); // TODO Adjust index
-		Date currentDate = calendar.getTime();
+		int day = calendar.get(Calendar.DAY_OF_WEEK);
 
 		for (String room : sqlManager.getRooms()) {
 
@@ -82,16 +91,30 @@ public class Planner {
 			Double currentTemperature = sqlManager.getSensedData(room, "temperature", Interval.LAST).get(0).getValue();
 			Double currentPresence = sqlManager.getSensedData(room, "presence", Interval.LAST).get(0).getValue();
 
-			calculatePlan(currentTemperature, currentTrend, currentPresence, day, presences);
+			calculatePlan(currentTemperature, currentTrend, currentPresence, day, presences, room);
 		}
 
 	}
 
 	private void calculatePlan(Double currentTemperature, TemperatureTrend currentTrend, Double currentPresence,
-			int day, List<PresencePrediction> presences) {
+			int day, List<PresencePrediction> presences, String room) {
+		
+		// Get the area
+		Double targetTemperature = 0D;
 
+		if (room.substring(0, 7) == "bedroom") {
+			targetTemperature = sleeping_area_temperature_threshold;
+		}
+		if (room.substring(0, 6) == "toilet") {
+			targetTemperature = toilets_temperature_threshold;
+		}
+		if (room.substring(0, 10) == "livingroom"
+				|| room.substring(0, 7) == "kitchen") {
+			targetTemperature = living_area_temperature_threshold;
+		}
+		
 		if (currentPresence == 0) { // no presence
-			
+
 			Date currentDate = new Date();
 
 			Long difference = 0L;
@@ -100,29 +123,28 @@ public class Planner {
 
 				if (currentDate.after(presences.get(i).getEndTime())) {
 
-					
 				} else {
 
 					if (presences.get(i).getStartTime().before(currentDate)) { // inside prediction interval
-						
-					} else { 
+
+					} else {
 						difference = (presences.get(i).getStartTime().getTime() - currentDate.getTime()) / 1000;
 					}
 				}
+
 			}
-			
-			if (currentTrend.getSlope() >= 0 && currentTemperature >= targetTemperarure) {
+
+			if (currentTrend.getSlope() >= 0 && currentTemperature >= targetTemperature) {
 				// TODO heater OFF
 			} else {
 				if (difference < 3600) {
 					// TODO heater ON
 				}
 			}
-			
-			
+
 		} else { // presence
 
-			if (currentTemperature >= targetTemperarure) {
+			if (currentTemperature >= targetTemperature) {
 
 				if (currentTrend.getSlope() >= 0) {
 					// TODO heater OFF
@@ -134,6 +156,52 @@ public class Planner {
 			}
 		}
 
+	}
+
+	public void setConfiguration(BundleContext context) {
+
+		System.out
+				.println("Planner - Copy thresholds file to " + context.getBundle().getDataFile("").getAbsolutePath());
+
+		// Get type of sensor and room and server URL File configuration =
+		File configuration = context.getBundle().getDataFile("threshold.properties");
+
+		while (!configuration.exists()) {
+		}
+
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e1) {
+			System.out.println("Sleep interrupted");
+		}
+
+		Properties properties = new Properties();
+		InputStream input = null;
+
+		try {
+			if (configuration != null) {
+				input = new FileInputStream(configuration);
+				properties.load(input);
+
+				this.living_area_temperature_threshold = Double
+						.parseDouble(properties.getProperty("living_area_temperature_threshold"));
+				this.sleeping_area_temperature_threshold = Double
+						.parseDouble(properties.getProperty("sleeping_area_temperature_threshold"));
+				this.toilets_temperature_threshold = Double
+						.parseDouble(properties.getProperty("toilets_temperature_threshold"));
+			}
+
+		} catch (IOException ex) {
+			System.out.println("IOException reading configuration file");
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					System.out.println("IOException closing configuration file");
+				}
+			}
+		}
 	}
 
 }
