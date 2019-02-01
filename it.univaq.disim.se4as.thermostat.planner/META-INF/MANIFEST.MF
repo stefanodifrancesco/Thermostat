@@ -8,6 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: it.univaq.disim.se4as.thermostat.planner
 Import-Package: it.univaq.disim.se4as.thermostat.Models,
  it.univaq.disim.se4as.thermostat.SQLManager,
+ it.univaq.disim.se4as.thermostat.executor,
  org.osgi.framework;version="1.3.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: it.univaq.disim.se4as.thermostat.planner

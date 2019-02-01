@@ -20,7 +20,7 @@ public class Activator implements BundleActivator {
 		
 		Activator.context = bundleContext;
 		Planner planner = new Planner(bundleContext);
-		
+		planner.setConfiguration(bundleContext);
 	}
 
 	/*

@@ -11,9 +11,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Timestamp;
-
-import javax.swing.tree.TreeCellRenderer;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -24,11 +21,14 @@ import it.univaq.disim.se4as.thermostat.Models.TemperatureTrend;
 import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager;
 import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager.DayOfWeek;
 import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager.Interval;
+import it.univaq.disim.se4as.thermostat.executor.Executor;
+import it.univaq.disim.se4as.thermostat.executor.Executor.OnOff;
 
 public class Planner {
 
 	private BundleContext context;
 	private SQLManager sqlManager;
+	private Executor executor;
 	private List<TemperatureTrend> trends;
 
 	private Double living_area_temperature_threshold;
@@ -38,11 +38,11 @@ public class Planner {
 	public Planner(BundleContext context) {
 		this.context = context;
 		this.sqlManager = getSQLmanagerInstance();
+		this.executor = getExecutorInstance();
+
 	}
 
 	public SQLManager getSQLmanagerInstance() {
-
-		SQLManager sqlManager = null;
 
 		ServiceReference<?>[] refs;
 
@@ -53,10 +53,7 @@ public class Planner {
 
 				if (refs[0] != null) {
 					SQLManager manager = (SQLManager) context.getService(refs[0]);
-					if (manager != null) {
-						sqlManager = manager;
-					}
-
+					return manager;
 				}
 			}
 
@@ -65,7 +62,30 @@ public class Planner {
 			e1.printStackTrace();
 		}
 
-		return sqlManager;
+		return null;
+	}
+
+	public Executor getExecutorInstance() {
+
+		ServiceReference<?>[] refs;
+
+		try {
+			refs = context.getAllServiceReferences(Executor.class.getName(), null);
+
+			if (refs != null) {
+
+				if (refs[0] != null) {
+					Executor executorInstance = (Executor) context.getService(refs[0]);
+					return executorInstance;
+				}
+			}
+
+		} catch (InvalidSyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		return null;
 	}
 
 	public void receiveTrends(List<TemperatureTrend> trends) {
@@ -98,7 +118,7 @@ public class Planner {
 
 	private void calculatePlan(Double currentTemperature, TemperatureTrend currentTrend, Double currentPresence,
 			int day, List<PresencePrediction> presences, String room) {
-		
+
 		// Get the area
 		Double targetTemperature = 0D;
 
@@ -108,11 +128,10 @@ public class Planner {
 		if (room.substring(0, 6) == "toilet") {
 			targetTemperature = toilets_temperature_threshold;
 		}
-		if (room.substring(0, 10) == "livingroom"
-				|| room.substring(0, 7) == "kitchen") {
+		if (room.substring(0, 10) == "livingroom" || room.substring(0, 7) == "kitchen") {
 			targetTemperature = living_area_temperature_threshold;
 		}
-		
+
 		if (currentPresence == 0) { // no presence
 
 			Date currentDate = new Date();
@@ -135,10 +154,10 @@ public class Planner {
 			}
 
 			if (currentTrend.getSlope() >= 0 && currentTemperature >= targetTemperature) {
-				// TODO heater OFF
+				executor.setHeater(OnOff.OFF, room);
 			} else {
 				if (difference < 3600) {
-					// TODO heater ON
+					executor.setHeater(OnOff.ON, room);
 				}
 			}
 
@@ -147,12 +166,12 @@ public class Planner {
 			if (currentTemperature >= targetTemperature) {
 
 				if (currentTrend.getSlope() >= 0) {
-					// TODO heater OFF
+					executor.setHeater(OnOff.OFF, room);
 				} else {
-					// TODO heater ON
+					executor.setHeater(OnOff.ON, room);
 				}
 			} else {
-				// TODO heater ON
+				executor.setHeater(OnOff.ON, room);
 			}
 		}
 
