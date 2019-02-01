@@ -20,3 +20,12 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+.DS_Store
+it.univaq.disim.se4as.thermostat.analyzer/.DS_Store
+it.univaq.disim.se4as.thermostat.SQLManager/.DS_Store
+it.univaq.disim.se4as.thermostat.SQLManager/src/.DS_Store
+it.univaq.disim.se4as.thermostat.SQLManager/src/it/.DS_Store
+it.univaq.disim.se4as.thermostat.SQLManager/src/it/univaq/.DS_Store
+it.univaq.disim.se4as.thermostat.SQLManager/src/it/univaq/disim/.DS_Store
+it.univaq.disim.se4as.thermostat.SQLManager/src/it/univaq/disim/se4as/.DS_Store
+it.univaq.disim.se4as.thermostat.SQLManager/src/it/univaq/disim/se4as/thermostat/.DS_Store
