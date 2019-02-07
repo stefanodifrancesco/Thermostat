@@ -153,7 +153,7 @@ public class Monitor implements MqttCallback{
 		try {
 		
 			//mqttClient.subscribe("home/"+ info.getRoom());
-			mqttClient.subscribe("home/#");
+			mqttClient.subscribe("home/sensors/#");
 			
 		} catch (MqttException e) {
 		      e.printStackTrace();
@@ -195,8 +195,12 @@ public class Monitor implements MqttCallback{
 			sensedValue = 100.0;
 		}
 		
+		if (sensedValue> -50d && sensedValue<50d) {
+			insertDataIntoDB(arg0, sensedValue);
+		}else {
+			System.out.println("Monitor - Discarded fault value");
+		}
 		
-		insertDataIntoDB(arg0, sensedValue);
 		
 		/*SQLManager sqlManager = new SQLManager(context);
 		sqlManager.insertTemperature(arg0, sensedValue);
@@ -258,8 +262,8 @@ public class Monitor implements MqttCallback{
 			
 			topicArray = topic.split(delimiter);
 			
-			sensedValue.setRoom(topicArray[1]);
-			sensedValue.setSensorType(topicArray[2]);
+			sensedValue.setRoom(topicArray[2]);
+			sensedValue.setSensorType(topicArray[3]);
 			sensedValue.setValue(value);
 			
 			if (sqlManager != null) {
