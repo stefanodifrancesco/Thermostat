@@ -1,5 +1,6 @@
 package it.univaq.disim.se4as.thermostat.SQLManager;
 
+import it.univaq.disim.se4as.thermostat.DatabaseAPI.DatabaseAPI;
 import it.univaq.disim.se4as.thermostat.Models.PresencePrediction;
 import it.univaq.disim.se4as.thermostat.Models.SensedValue;
 import java.io.File;
@@ -18,26 +19,18 @@ import java.util.concurrent.TimeUnit;
 
 import org.osgi.framework.BundleContext;
 
-public class SQLManager {
+public class SQLManager implements DatabaseAPI{
 
 	private String server;
 	private String database;
 	private String user;
 	private String password;
 
-	public enum Interval {
-		LAST, LAST_WEEK, ALL
-	}
-
-	public enum DayOfWeek {
-		sunday, monday, tuesday, wednesday, thursday, friday, saturday
-	}
-
 	public SQLManager(BundleContext context) {
 		setConfiguration(context);
 	}
 
-	public void setConfiguration(BundleContext context) {
+	private void setConfiguration(BundleContext context) {
 
 		System.out.println(
 				"SQLManager - Copy configuration files to " + context.getBundle().getDataFile("").getAbsolutePath());
@@ -82,7 +75,7 @@ public class SQLManager {
 		}
 	}
 
-	public Connection connect() {
+	private Connection connect() {
 
 		Connection connection = null;
 

@@ -1,11 +1,11 @@
 package it.univaq.disim.se4as.thermostat.planner;
 
+import it.univaq.disim.se4as.thermostat.AnalyzerAPI.AnalyzerAPI;
+import it.univaq.disim.se4as.thermostat.DatabaseAPI.DatabaseAPI;
+import it.univaq.disim.se4as.thermostat.DatabaseAPI.DatabaseAPI.DayOfWeek;
+import it.univaq.disim.se4as.thermostat.DatabaseAPI.DatabaseAPI.Interval;
 import it.univaq.disim.se4as.thermostat.Models.PresencePrediction;
 import it.univaq.disim.se4as.thermostat.Models.TemperatureTrend;
-import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager;
-import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager.DayOfWeek;
-import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager.Interval;
-import it.univaq.disim.se4as.thermostat.analyzer.Analyzer;
 import it.univaq.disim.se4as.thermostat.executor.Executor;
 import it.univaq.disim.se4as.thermostat.executor.Executor.OnOff;
 
@@ -18,14 +18,14 @@ import java.util.TimeZone;
 
 public class PlannerThread extends Thread {
 
-	private SQLManager sqlManager;
-	private Analyzer analyzer;
+	private DatabaseAPI databaseAPI;
+	private AnalyzerAPI analyzer;
 	private Executor executor;
 
 	private Map<String, Double> thresholds = new HashMap<>();
 
-	public PlannerThread(SQLManager manager, Analyzer analyzerInstance, Executor executor) {
-		this.sqlManager = manager;
+	public PlannerThread(DatabaseAPI databaseAPI, AnalyzerAPI analyzerInstance, Executor executor) {
+		this.databaseAPI = databaseAPI;
 		this.analyzer = analyzerInstance;
 		this.executor = executor;
 	}
@@ -54,14 +54,14 @@ public class PlannerThread extends Thread {
 
 	public void plan() {
 
-		List<TemperatureTrend> trends = analyzer.calculateTrends(sqlManager.getRooms());
+		List<TemperatureTrend> trends = analyzer.calculateTrends(databaseAPI.getRooms());
 
 		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 		int day = calendar.get(Calendar.DAY_OF_WEEK);
 
-		for (String room : sqlManager.getRooms()) {
+		for (String room : databaseAPI.getRooms()) {
 
-			List<PresencePrediction> presences = sqlManager.getPresenceHistory(room, DayOfWeek.values()[day]);
+			List<PresencePrediction> presences = databaseAPI.getPresenceHistory(room, DayOfWeek.values()[day]);
 
 			TemperatureTrend currentTrend = null;
 			for (TemperatureTrend trend : trends) {
@@ -70,8 +70,8 @@ public class PlannerThread extends Thread {
 				}
 			}
 
-			Double currentTemperature = sqlManager.getSensedData(room, "temperature", Interval.LAST).get(0).getValue();
-			Double currentPresence = sqlManager.getSensedData(room, "presence", Interval.LAST).get(0).getValue();
+			Double currentTemperature = databaseAPI.getSensedData(room, "temperature", Interval.LAST).get(0).getValue();
+			Double currentPresence = databaseAPI.getSensedData(room, "presence", Interval.LAST).get(0).getValue();
 
 			calculatePlan(currentTemperature, currentTrend, currentPresence, day, presences, room);
 		}

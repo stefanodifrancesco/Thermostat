@@ -4,17 +4,17 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.univaq.disim.se4as.thermostat.DatabaseAPI.DatabaseAPI;
+import it.univaq.disim.se4as.thermostat.DatabaseAPI.DatabaseAPI.DayOfWeek;
 import it.univaq.disim.se4as.thermostat.Models.PresencePrediction;
 import it.univaq.disim.se4as.thermostat.Models.SensedValue;
-import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager;
-import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager.DayOfWeek;
 
 public class AnalysisThread extends Thread {
 
-	private SQLManager sqlManager;
+	private DatabaseAPI databaseAPI;
 
-	public AnalysisThread(SQLManager manager) {
-		this.sqlManager = manager;
+	public AnalysisThread(DatabaseAPI databaseAPI) {
+		this.databaseAPI = databaseAPI;
 	}
 	
 	@Override
@@ -24,13 +24,13 @@ public class AnalysisThread extends Thread {
 
 			while (!Thread.interrupted()) {
 				while (true) {
-					List<String> rooms = sqlManager.getRooms();
+					List<String> rooms = databaseAPI.getRooms();
 
 					
 					// presence prediction
-					sqlManager.clearPresenceHistory();
+					databaseAPI.clearPresenceHistory();
 					for (PresencePrediction prediction : predictPresence(rooms)) {
-						sqlManager.insertPresenceHistory(prediction);
+						databaseAPI.insertPresenceHistory(prediction);
 					}
 					
 					Thread.sleep(10000);
@@ -50,9 +50,9 @@ public class AnalysisThread extends Thread {
 		List<PresencePrediction> presencePredictions = new ArrayList<PresencePrediction>();
 
 		for (String room : rooms) {
-			for (SQLManager.DayOfWeek day : DayOfWeek.values()) {
+			for (DayOfWeek day : DayOfWeek.values()) {
 				
-				List<SensedValue> values = sqlManager.getPresenceDataForPrediction(room, day);
+				List<SensedValue> values = databaseAPI.getPresenceDataForPrediction(room, day);
 				
 				if (values.size() > 0) {
 					presencePredictions.addAll(predictIntervals(values, room, day));

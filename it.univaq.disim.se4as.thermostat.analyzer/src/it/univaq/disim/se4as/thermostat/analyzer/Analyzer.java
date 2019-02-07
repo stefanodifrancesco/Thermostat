@@ -6,18 +6,18 @@ import java.util.List;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-
+import it.univaq.disim.se4as.thermostat.AnalyzerAPI.AnalyzerAPI;
+import it.univaq.disim.se4as.thermostat.DatabaseAPI.DatabaseAPI;
+import it.univaq.disim.se4as.thermostat.DatabaseAPI.DatabaseAPI.Interval;
 import it.univaq.disim.se4as.thermostat.Models.SensedValue;
 import it.univaq.disim.se4as.thermostat.Models.TemperatureTrend;
-import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager;
-import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager.Interval;
 
-public class Analyzer {
+public class Analyzer implements AnalyzerAPI{
 
 	private BundleContext context;
 	
 	private AnalysisThread analysisThread;
-	private SQLManager sqlManager;
+	private DatabaseAPI databaseAPI;
 
 	public Analyzer(BundleContext context) {
 		this.context = context;
@@ -25,8 +25,8 @@ public class Analyzer {
 	
 	public void startAnalysis() {
 
-		sqlManager = getSQLmanagerInstance();
-		analysisThread = new AnalysisThread(sqlManager);
+		databaseAPI = getDatabaseAPIInstance();
+		analysisThread = new AnalysisThread(databaseAPI);
 		analysisThread.start();
 		System.out.println("Analyzer started!");
 
@@ -38,7 +38,7 @@ public class Analyzer {
 
 		for (String room : rooms) {
 
-			List<SensedValue> values = sqlManager.getSensedData(room, "temperature", Interval.ALL);
+			List<SensedValue> values = databaseAPI.getSensedData(room, "temperature", Interval.ALL);
 
 			TemperatureTrend trend = new TemperatureTrend();
 			trend.setRoom(room);
@@ -61,24 +61,23 @@ public class Analyzer {
 		return trends;
 	}
 	
-	public SQLManager getSQLmanagerInstance() {
+	public DatabaseAPI getDatabaseAPIInstance() {
 
 		ServiceReference<?>[] refs;
 
 		try {
-			refs = context.getAllServiceReferences(SQLManager.class.getName(), null);
+			refs = context.getAllServiceReferences(DatabaseAPI.class.getName(), null);
 
 			if (refs != null) {
 
 				if (refs[0] != null) {
-					SQLManager manager = (SQLManager) context.getService(refs[0]);
-					return manager;
+					DatabaseAPI dbAPI = (DatabaseAPI) context.getService(refs[0]);
+					return dbAPI;
 				}
 			}
 
-		} catch (InvalidSyntaxException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (InvalidSyntaxException e) {
+			e.printStackTrace();
 		}
 
 		return null;

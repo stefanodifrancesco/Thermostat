@@ -3,7 +3,7 @@ package it.univaq.disim.se4as.thermostat.analyzer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager;
+import it.univaq.disim.se4as.thermostat.AnalyzerAPI.AnalyzerAPI;
 
 public class Activator implements BundleActivator {
 
@@ -21,10 +21,10 @@ public class Activator implements BundleActivator {
 		
 		Activator.context = bundleContext;		
 		
-		Analyzer analyzer = new Analyzer(bundleContext);
-		analyzer.startAnalysis();
+		AnalyzerAPI analyzerAPI = new Analyzer(bundleContext);
+		analyzerAPI.startAnalysis();
 		
-		context.registerService(Analyzer.class.getName(), analyzer , null);
+		context.registerService(Analyzer.class.getName(), analyzerAPI , null);
 		
 	}
 

@@ -1,7 +1,7 @@
 package it.univaq.disim.se4as.thermostat.monitor;
 
+import it.univaq.disim.se4as.thermostat.DatabaseAPI.DatabaseAPI;
 import it.univaq.disim.se4as.thermostat.Models.SensedValue;
-import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,15 +20,9 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 public class Monitor implements MqttCallback{
-	//private Boolean active = true;
 
-	private MqttClient mqttClient;
-	
+	private MqttClient mqttClient;	
 	private String server;
-	
-	/*private List<SensorInfo> sensorInfoListOld = new ArrayList<SensorInfo>();
-	private List<SensorInfo> sensorInfoListNew = new ArrayList<SensorInfo>();*/
-	
 	private BundleContext context;
 
 	public Monitor(BundleContext context) {
@@ -81,57 +75,6 @@ public class Monitor implements MqttCallback{
 		}
 	}
 	
-	/*@Override
-	public void run() {
-		connect();
-		
-		while (active) {
-		getTopics();
-		
-		//check difference between the 2 lists
-		updateSubscriptions();
-		}
-		
-	}*/
-
-	/*public void getTopics(){
-
-			ServiceReference<?>[] refs;
-			try {
-				refs = context.getAllServiceReferences(ISensor.class.getName(), null);
-			
-
-			if (refs != null) {
-				for (int i = 0; i < refs.length; i++) {
-					ISensor sensor = (ISensor) context.getService(refs[i]);
-					if (refs[i] != null) {
-						if (sensor != null) {
-							System.out.println(sensor.getSensorInfo().getRoom().toString());
-							System.out.println(sensor.getSensorInfo().getSensorType().toString());
-							
-							sensorInfoListNew.add(sensor.getSensorInfo());
-						}
-
-					}
-				}
-
-			}
-			
-			} catch (InvalidSyntaxException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}*/
-	
-	
 	public void connect() {
 		
 		MemoryPersistence persistence = new MemoryPersistence();
@@ -151,27 +94,13 @@ public class Monitor implements MqttCallback{
 	public void subscribe() {
 		
 		try {
-		
-			//mqttClient.subscribe("home/"+ info.getRoom());
+			
 			mqttClient.subscribe("home/sensors/#");
 			
 		} catch (MqttException e) {
 		      e.printStackTrace();
 		}
 	  }
-	
-	/*public void unsubscribe(SensorInfo info) {
-		
-		try {
-			
-			
-			mqttClient.unsubscribe("home/"+ info.getRoom());
-			
-			
-		} catch (MqttException e) {
-		      e.printStackTrace();
-		}
-	  }*/
 
 	@Override
 	public void connectionLost(Throwable arg0) {
@@ -200,59 +129,33 @@ public class Monitor implements MqttCallback{
 		}else {
 			System.out.println("Monitor - Discarded fault value");
 		}
-		
-		
-		/*SQLManager sqlManager = new SQLManager(context);
-		sqlManager.insertTemperature(arg0, sensedValue);
-		
-		System.out.println("Interted in the DB");*/
+
 	}
-	 
-	/*public void updateSubscriptions() {
-		
-		//loop for new sensors
-		for (SensorInfo sensorInfo : sensorInfoListNew) {
-			if (!sensorInfoListOld.contains(sensorInfo)) {
-				subscribe(sensorInfo);
-				sensorInfoListOld.add(sensorInfo);
-			}
-		} 
-		
-		//loop for removed sensors
-		for (SensorInfo sensorInfo : sensorInfoListOld) {
-			if (!sensorInfoListNew.contains(sensorInfo)) {
-				unsubscribe(sensorInfo);
-				sensorInfoListOld.remove(sensorInfo);
-			}
-		} 
-		
-	}*/
 	
 	public void insertDataIntoDB(String topic, Double value) {
 		String[] topicArray;
 		
 		SensedValue sensedValue= new SensedValue();
 		
-		SQLManager sqlManager = null;
+		DatabaseAPI databaseAPI = null;
 		
 		ServiceReference<?>[] refs;
 		
 		try {
-			refs = context.getAllServiceReferences(SQLManager.class.getName(), null);
+			refs = context.getAllServiceReferences(DatabaseAPI.class.getName(), null);
 		
 			if (refs != null) {
 				
 					if (refs[0] != null) {
-						SQLManager manager = (SQLManager) context.getService(refs[0]);
-						if (manager != null) {
-							sqlManager = manager;
+						DatabaseAPI dbAPI = (DatabaseAPI) context.getService(refs[0]);
+						if (dbAPI != null) {
+							databaseAPI = dbAPI;
 						}
 	
 					}
 			}
 		
 		} catch (InvalidSyntaxException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -266,8 +169,8 @@ public class Monitor implements MqttCallback{
 			sensedValue.setSensorType(topicArray[3]);
 			sensedValue.setValue(value);
 			
-			if (sqlManager != null) {
-				sqlManager.insertSensedValue(sensedValue);
+			if (databaseAPI != null) {
+				databaseAPI.insertSensedValue(sensedValue);
 			}			
 			
 			//System.out.println("Interted in the DB");

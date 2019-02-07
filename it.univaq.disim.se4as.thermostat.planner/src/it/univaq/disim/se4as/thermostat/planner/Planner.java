@@ -20,9 +20,8 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-
-import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager;
-import it.univaq.disim.se4as.thermostat.analyzer.Analyzer;
+import it.univaq.disim.se4as.thermostat.AnalyzerAPI.AnalyzerAPI;
+import it.univaq.disim.se4as.thermostat.DatabaseAPI.DatabaseAPI;
 import it.univaq.disim.se4as.thermostat.executor.Executor;
 
 public class Planner implements MqttCallback{
@@ -48,7 +47,7 @@ public class Planner implements MqttCallback{
 		connect();
 		subscribe();
 
-		plannerThread = new PlannerThread(getSQLmanagerInstance(), getAnalyzerInstance(), getExecutorInstance());
+		plannerThread = new PlannerThread(getDatabaseAPIInstance(), getAnalyzerAPIInstance(), getExecutorInstance());
 		plannerThread.start();
 		System.out.println("Planner started!");
 
@@ -167,17 +166,17 @@ public class Planner implements MqttCallback{
 		}
 	}
 
-	public SQLManager getSQLmanagerInstance() {
+	public DatabaseAPI getDatabaseAPIInstance() {
 
 		ServiceReference<?>[] refs;
 
 		try {
-			refs = context.getAllServiceReferences(SQLManager.class.getName(), null);
+			refs = context.getAllServiceReferences(DatabaseAPI.class.getName(), null);
 
 			if (refs != null) {
 
 				if (refs[0] != null) {
-					SQLManager manager = (SQLManager) context.getService(refs[0]);
+					DatabaseAPI manager = (DatabaseAPI) context.getService(refs[0]);
 					return manager;
 				}
 			}
@@ -190,19 +189,19 @@ public class Planner implements MqttCallback{
 		return null;
 	}
 
-	public Analyzer getAnalyzerInstance() {
+	public AnalyzerAPI getAnalyzerAPIInstance() {
 
-		Analyzer analyzerInstance = null;
+		AnalyzerAPI analyzerInstance = null;
 
 		ServiceReference<?>[] refs;
 
 		try {
-			refs = context.getAllServiceReferences(Analyzer.class.getName(), null);
+			refs = context.getAllServiceReferences(AnalyzerAPI.class.getName(), null);
 
 			if (refs != null) {
 
 				if (refs[0] != null) {
-					Analyzer analyzer = (Analyzer) context.getService(refs[0]);
+					AnalyzerAPI analyzer = (AnalyzerAPI) context.getService(refs[0]);
 					if (analyzer != null) {
 						analyzerInstance = analyzer;
 					}
