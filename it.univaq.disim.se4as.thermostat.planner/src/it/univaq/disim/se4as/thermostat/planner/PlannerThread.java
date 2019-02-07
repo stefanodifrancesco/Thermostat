@@ -21,10 +21,11 @@ public class PlannerThread extends Thread {
 	private SQLManager sqlManager;
 	private Analyzer analyzer;
 	private Executor executor;
-	
+
 	private Map<String, Double> thresholds = new HashMap<>();
 
-	public PlannerThread(SQLManager manager, Analyzer analyzerInstance, Executor executor, Map<String, Double> thresholds) {
+	public PlannerThread(SQLManager manager, Analyzer analyzerInstance, Executor executor,
+			Map<String, Double> thresholds) {
 		this.sqlManager = manager;
 		this.analyzer = analyzerInstance;
 		this.executor = executor;
@@ -134,6 +135,14 @@ public class PlannerThread extends Thread {
 			}
 		}
 
+	}
+
+	public Map<String, Double> getThresholds() {
+		return thresholds;
+	}
+
+	public void setThresholds(Map<String, Double> thresholds) {
+		this.thresholds = thresholds;
 	}
 
 }
