@@ -3,10 +3,11 @@ package it.univaq.disim.se4as.thermostat.planner;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-
 public class Activator implements BundleActivator {
 
 	private static BundleContext context;
+	
+	private Planner planner;
 
 	static BundleContext getContext() {
 		return context;
@@ -19,8 +20,9 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		
 		Activator.context = bundleContext;
-		Planner planner = new Planner(bundleContext);
+		planner = new Planner(bundleContext);
 		planner.setConfiguration(bundleContext);
+		planner.startPlanning();
 	}
 
 	/*
@@ -29,6 +31,8 @@ public class Activator implements BundleActivator {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		Activator.context = null;
+		
+		planner.stopPlanning();
 	}
 
 }

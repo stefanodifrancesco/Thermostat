@@ -6,49 +6,43 @@ import java.util.List;
 
 import it.univaq.disim.se4as.thermostat.Models.PresencePrediction;
 import it.univaq.disim.se4as.thermostat.Models.SensedValue;
-import it.univaq.disim.se4as.thermostat.Models.TemperatureTrend;
 import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager;
 import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager.DayOfWeek;
-import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager.Interval;
-import it.univaq.disim.se4as.thermostat.planner.Planner;
 
 public class AnalysisThread extends Thread {
 
 	private SQLManager sqlManager;
-	private Planner planner;
 
-	public AnalysisThread(SQLManager manager, Planner planner) {
+	public AnalysisThread(SQLManager manager) {
 		this.sqlManager = manager;
-		this.planner = planner;
 	}
+	
+	@Override
+	public void run() {
 
-	private List<TemperatureTrend> calculateTrends(List<String> rooms) {
+		try {
 
-		List<TemperatureTrend> trends = new ArrayList<TemperatureTrend>();
+			while (!Thread.interrupted()) {
+				while (true) {
+					List<String> rooms = sqlManager.getRooms();
 
-		for (String room : rooms) {
+					
+					// presence prediction
+					sqlManager.clearPresenceHistory();
+					for (PresencePrediction prediction : predictPresence(rooms)) {
+						sqlManager.insertPresenceHistory(prediction);
+					}
+					
+					Thread.sleep(10000);
+				}
 
-			List<SensedValue> values = sqlManager.getSensedData(room, "temperature", Interval.ALL);
+			}
+			return;
 
-			TemperatureTrend trend = new TemperatureTrend();
-			trend.setRoom(room);
+		} catch (InterruptedException e1) {
 
-			double slope = 0;
-
-			int t4 = 0;
-			int t1 = 10;
-			double T4 = values.get(t4).getValue();
-			double T1 = values.get(t1).getValue();
-			int deltaTime = t1 - t4;
-
-			slope = (T4 - T1) / deltaTime;
-
-			trend.setSlope(slope);
-			System.out.println("slope" + slope);
-			trends.add(trend);
+			System.out.println("Analyzer stopped");
 		}
-
-		return trends;
 	}
 
 	private List<PresencePrediction> predictPresence(List<String> rooms) {
@@ -110,37 +104,6 @@ public class AnalysisThread extends Thread {
 
 	}
 
-	@Override
-	public void run() {
-
-		try {
-
-			while (!Thread.interrupted()) {
-				while (true) {
-					List<String> rooms = sqlManager.getRooms();
-
-					
-					// presence prediction
-					sqlManager.clearPresenceHistory();
-					for (PresencePrediction prediction : predictPresence(rooms)) {
-						sqlManager.insertPresenceHistory(prediction);
-					}
-
-					// temperature trend
-					List<TemperatureTrend> temperatureTrends = calculateTrends(rooms);
-					planner.receiveTrends(temperatureTrends);
-					planner.startPlanning();
-					
-					Thread.sleep(10000);
-				}
-
-			}
-			return;
-
-		} catch (InterruptedException e1) {
-
-			System.out.println("Analyzer stopped");
-		}
-	}
+	
 
 }

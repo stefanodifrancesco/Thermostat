@@ -14,90 +14,91 @@ import java.util.concurrent.TimeUnit;
 import org.osgi.framework.BundleContext;
 
 public class Sensor {
-	
+
 	private String sensor_type;
 	private String room;
 	private String server;
 	private String[] sensedValues;
 	private SenderThread send;
-	
-	
-	public Sensor() throws IOException { }
-	
+
+	public Sensor() throws IOException {
+	}
+
+	public void startSending() {
+		send = new SenderThread(this.sensor_type, this.room, server, sensedValues);
+		send.start();
+		System.out.println("Sensor started sending!");
+	}
+
+	public void stopSending() {
+		send.interrupt();
+	}
+
 	public void setConfiguration(BundleContext context) {
-		
-		System.out.println("Copy configuration files to " + context.getBundle().getDataFile("").getAbsolutePath());
-		
-		
+
+		System.out.println("Sensor - Copy configuration files to " + context.getBundle().getDataFile("").getAbsolutePath());
+
 		// Get type of sensor and room and server URL
 		File configuration = context.getBundle().getDataFile("config.properties");
-		
-		while (!configuration.exists()) {}
+
+		while (!configuration.exists()) {
+		}
 
 		try {
 			TimeUnit.SECONDS.sleep(1);
 		} catch (InterruptedException e1) {
 			System.out.println("Sleep interrupted");
 		}
-		
+
 		Properties properties = new Properties();
-	    InputStream input = null;
+		InputStream input = null;
 
-	    try {
-	    	if (configuration != null)
-	    	{
-	    		input = new FileInputStream(configuration);
-	    		properties.load(input);
-	    		this.sensor_type = properties.getProperty("type");
-	    		this.room = properties.getProperty("room");
-	    		this.server = properties.getProperty("server");
-	    	}
-	    } catch (IOException ex) {
-	        System.out.println("IOException reading configuration file");
-	    } finally {
-	        if (input != null) {
-	            try {
-	                input.close();
-	            } catch (IOException e) {
-	            	System.out.println("IOException closing configuration file");
-	            }
-	        }
-	    }
-	    
-	    // Get list of sensed values
-	    File valuesFile = context.getBundle().getDataFile("values");
-		
-		while (!valuesFile.exists()) {}
-		
+		try {
+			if (configuration != null) {
+				input = new FileInputStream(configuration);
+				properties.load(input);
+				this.sensor_type = properties.getProperty("type");
+				this.room = properties.getProperty("room");
+				this.server = properties.getProperty("server");
+			}
+		} catch (IOException ex) {
+			System.out.println("IOException reading configuration file");
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					System.out.println("IOException closing configuration file");
+				}
+			}
+		}
+
+		// Get list of sensed values
+		File valuesFile = context.getBundle().getDataFile("values");
+
+		while (!valuesFile.exists()) {
+		}
+
 		try {
 			TimeUnit.SECONDS.sleep(1);
 		} catch (InterruptedException e1) {
 			System.out.println("Sleep interrupted");
 		}
-		
+
 		List<String> values = new ArrayList<String>();
-		
-	    BufferedReader abc;
+
+		BufferedReader abc;
 		try {
-			abc = new BufferedReader(new FileReader(valuesFile));			
+			abc = new BufferedReader(new FileReader(valuesFile));
 			String line;
-			while((line = abc.readLine()) != null) {
+			while ((line = abc.readLine()) != null) {
 				values.add(line);
-		    }	    
+			}
 			abc.close();
 		} catch (IOException e) {
 			System.out.println("IOException reading values file");
 		}
-		sensedValues = values.toArray(new String[]{});
+		sensedValues = values.toArray(new String[] {});
 	}
-	
-	public void startSending() {		
-		send = new SenderThread(this.sensor_type, this.room, server, sensedValues);
-		send.start();
-	    System.out.println("Sensor started sending!");
-	}
-	
-	public void stopSending() {
-		send.interrupt();
-	}
+
 }
