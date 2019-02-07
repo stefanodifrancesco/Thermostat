@@ -65,7 +65,7 @@ public class Planner implements MqttCallback{
 		
 		try {
 			
-			mqttClient = new MqttClient("tcp://"+ hostMQTT, "monitorSubscribe", persistence);
+			mqttClient = new MqttClient("tcp://"+ hostMQTT, "plannerSubscribe", persistence);
 			mqttClient.setCallback(this);
 			mqttClient.connect();
 			
@@ -127,7 +127,7 @@ public class Planner implements MqttCallback{
 	public void setConfiguration(BundleContext context) {
 
 		System.out
-				.println("Planner - Copy thresholds file to " + context.getBundle().getDataFile("").getAbsolutePath());
+				.println("Planner - Copy config file to " + context.getBundle().getDataFile("").getAbsolutePath());
 
 		// Get type of sensor and room and server URL File configuration =
 		File configuration = context.getBundle().getDataFile("config.properties");
