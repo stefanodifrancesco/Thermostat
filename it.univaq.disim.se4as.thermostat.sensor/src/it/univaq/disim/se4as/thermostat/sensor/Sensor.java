@@ -117,7 +117,7 @@ public class Sensor implements MqttCallback {
 			MqttMessage message = new MqttMessage();
 
 			message.setPayload(sensedValue.toString().getBytes());
-			mqttClientSender.publish("home/" + this.room + "/" + this.sensor_type, message);
+			mqttClientSender.publish("home/sensors/" + this.room + "/" + this.sensor_type, message);
 
 			
 		} catch (MqttException e) {

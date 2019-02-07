@@ -45,8 +45,10 @@ public class Planner implements MqttCallback{
 
 	public void startPlanning() {
 		
+		connect();
+		subscribe();
 
-		plannerThread = new PlannerThread(getSQLmanagerInstance(), getAnalyzerInstance(), getExecutorInstance(), thresholds);
+		plannerThread = new PlannerThread(getSQLmanagerInstance(), getAnalyzerInstance(), getExecutorInstance());
 		plannerThread.start();
 		System.out.println("Planner started!");
 

@@ -24,12 +24,10 @@ public class PlannerThread extends Thread {
 
 	private Map<String, Double> thresholds = new HashMap<>();
 
-	public PlannerThread(SQLManager manager, Analyzer analyzerInstance, Executor executor,
-			Map<String, Double> thresholds) {
+	public PlannerThread(SQLManager manager, Analyzer analyzerInstance, Executor executor) {
 		this.sqlManager = manager;
 		this.analyzer = analyzerInstance;
 		this.executor = executor;
-		this.thresholds = thresholds;
 	}
 
 	@Override
