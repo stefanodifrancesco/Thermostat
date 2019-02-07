@@ -70,7 +70,7 @@ public class Executor {
 				input = new FileInputStream(configuration);
 				properties.load(input);
 
-				this.hostMQTT = properties.getProperty("server");
+				this.hostMQTT = properties.getProperty("hostMQTT");
 
 			}
 

@@ -1,11 +1,17 @@
 package it.univaq.disim.se4as.thermostat.planner;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.KeyStore.Entry;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -19,9 +25,7 @@ public class Planner {
 
 	private BundleContext context;
 
-	private Double living_area_temperature_threshold;
-	private Double sleeping_area_temperature_threshold;
-	private Double toilets_temperature_threshold;
+	private Map<String, Double> thresholds = new HashMap<>();
 
 	private PlannerThread plannerThread;
 
@@ -31,8 +35,7 @@ public class Planner {
 
 	public void startPlanning() {
 
-		plannerThread = new PlannerThread(getSQLmanagerInstance(), getAnalyzerInstance(), getExecutorInstance(),
-				living_area_temperature_threshold, sleeping_area_temperature_threshold, toilets_temperature_threshold);
+		plannerThread = new PlannerThread(getSQLmanagerInstance(), getAnalyzerInstance(), getExecutorInstance(), thresholds);
 		plannerThread.start();
 		System.out.println("Planner started!");
 
@@ -66,13 +69,11 @@ public class Planner {
 			if (configuration != null) {
 				input = new FileInputStream(configuration);
 				properties.load(input);
-
-				this.living_area_temperature_threshold = Double
-						.parseDouble(properties.getProperty("living_area_temperature_threshold"));
-				this.sleeping_area_temperature_threshold = Double
-						.parseDouble(properties.getProperty("sleeping_area_temperature_threshold"));
-				this.toilets_temperature_threshold = Double
-						.parseDouble(properties.getProperty("toilets_temperature_threshold"));
+				
+				for (Object prop : properties.keySet()) {
+					String room = (String) prop;
+					thresholds.put(room, Double.parseDouble(properties.getProperty(room)));
+				}
 			}
 
 		} catch (IOException ex) {
@@ -118,7 +119,7 @@ public class Planner {
 		ServiceReference<?>[] refs;
 
 		try {
-			refs = context.getAllServiceReferences(Planner.class.getName(), null);
+			refs = context.getAllServiceReferences(Analyzer.class.getName(), null);
 
 			if (refs != null) {
 

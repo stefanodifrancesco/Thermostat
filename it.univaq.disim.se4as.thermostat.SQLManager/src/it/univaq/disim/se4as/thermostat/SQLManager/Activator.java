@@ -19,8 +19,7 @@ public class Activator implements BundleActivator {
 		Activator.context = bundleContext;
 		
 		SQLManager sqlManager = new SQLManager(bundleContext);
-		/*Monitor monitor = new Monitor(context);*/
-		//monitor.start();
+
 		context.registerService(SQLManager.class.getName(), sqlManager , null);
 	}
 

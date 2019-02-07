@@ -6,8 +6,6 @@ import org.osgi.framework.BundleContext;
 public class Activator implements BundleActivator {
 
 	private static BundleContext context;
-	
-	private Planner planner;
 
 	static BundleContext getContext() {
 		return context;
@@ -18,9 +16,8 @@ public class Activator implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
-		
 		Activator.context = bundleContext;
-		planner = new Planner(bundleContext);
+		Planner planner = new Planner(bundleContext);
 		planner.setConfiguration(bundleContext);
 		planner.startPlanning();
 	}
@@ -31,8 +28,6 @@ public class Activator implements BundleActivator {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		Activator.context = null;
-		
-		planner.stopPlanning();
 	}
 
 }

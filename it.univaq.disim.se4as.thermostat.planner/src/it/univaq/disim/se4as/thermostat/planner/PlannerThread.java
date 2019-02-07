@@ -1,10 +1,5 @@
 package it.univaq.disim.se4as.thermostat.planner;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-
 import it.univaq.disim.se4as.thermostat.Models.PresencePrediction;
 import it.univaq.disim.se4as.thermostat.Models.TemperatureTrend;
 import it.univaq.disim.se4as.thermostat.SQLManager.SQLManager;
@@ -14,24 +9,26 @@ import it.univaq.disim.se4as.thermostat.analyzer.Analyzer;
 import it.univaq.disim.se4as.thermostat.executor.Executor;
 import it.univaq.disim.se4as.thermostat.executor.Executor.OnOff;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+
 public class PlannerThread extends Thread {
 
 	private SQLManager sqlManager;
 	private Analyzer analyzer;
 	private Executor executor;
 	
-	private Double living_area_temperature_threshold;
-	private Double sleeping_area_temperature_threshold;
-	private Double toilets_temperature_threshold;
+	private Map<String, Double> thresholds = new HashMap<>();
 
-	public PlannerThread(SQLManager manager, Analyzer analyzerInstance, Executor executor, Double liveThreshold,
-			Double sleepThreshold, Double toiletThreshold) {
+	public PlannerThread(SQLManager manager, Analyzer analyzerInstance, Executor executor, Map<String, Double> thresholds) {
 		this.sqlManager = manager;
 		this.analyzer = analyzerInstance;
 		this.executor = executor;
-		this.living_area_temperature_threshold = liveThreshold;
-		this.sleeping_area_temperature_threshold = sleepThreshold;
-		this.toilets_temperature_threshold = toiletThreshold;
+		this.thresholds = thresholds;
 	}
 
 	@Override
@@ -85,17 +82,13 @@ public class PlannerThread extends Thread {
 	private void calculatePlan(Double currentTemperature, TemperatureTrend currentTrend, Double currentPresence,
 			int day, List<PresencePrediction> presences, String room) {
 
-		// Get the area
+		// Get the target temperature of the room
 		Double targetTemperature = 0D;
 
-		if (room.substring(0, 7) == "bedroom") {
-			targetTemperature = sleeping_area_temperature_threshold;
-		}
-		if (room.substring(0, 6) == "toilet") {
-			targetTemperature = toilets_temperature_threshold;
-		}
-		if (room.substring(0, 10) == "livingroom" || room.substring(0, 7) == "kitchen") {
-			targetTemperature = living_area_temperature_threshold;
+		if (thresholds.get(room) != null) {
+			targetTemperature = thresholds.get(room);
+		} else {
+			targetTemperature = 20D;
 		}
 
 		if (currentPresence == 0) { // no presence

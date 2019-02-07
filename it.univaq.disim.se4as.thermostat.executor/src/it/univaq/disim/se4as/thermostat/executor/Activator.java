@@ -18,6 +18,8 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 		Executor executor = new Executor(bundleContext);
+
+		context.registerService(Executor.class.getName(), executor , null);
 	}
 
 	/*
