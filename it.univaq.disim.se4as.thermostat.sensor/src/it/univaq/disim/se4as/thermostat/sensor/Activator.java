@@ -22,9 +22,8 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 		
-		Sensor sensor = new Sensor();
-		sensor.setConfiguration(bundleContext);
-		sensor.startSending();	
+		Sensor sensor = new Sensor(bundleContext);
+		sensor.startSensor();	
 	}
 
 	/*
@@ -34,7 +33,7 @@ public class Activator implements BundleActivator {
 	public void stop(BundleContext bundleContext) throws Exception {
 		Activator.context = null;
 		
-		sensor.stopSending();
+		//sensor.stopSending();
 	}
 
 }

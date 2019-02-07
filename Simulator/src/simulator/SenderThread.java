@@ -30,7 +30,7 @@ public class SenderThread extends Thread {
     		MemoryPersistence persistence = new MemoryPersistence();
     		
     		try {
-    			mqttClient = new MqttClient("tcp://" + server, sensorType + room + "_values", persistence);
+    			mqttClient = new MqttClient("tcp://" + server, "home/" + sensorType + "/" + room + "/values", persistence);
 				mqttClient.connect();
 			} catch (MqttException e) {
 				e.printStackTrace();
