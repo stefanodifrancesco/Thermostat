@@ -33,7 +33,7 @@ public class AnalysisThread extends Thread {
 						databaseAPI.insertPresenceHistory(prediction);
 					}
 					
-					Thread.sleep(10000);
+					Thread.sleep(12000);
 				}
 
 			}
@@ -72,10 +72,10 @@ public class AnalysisThread extends Thread {
 		Timestamp endTime = null;
 
 		Boolean presence = false;
-		if (values.get(values.size() - 1).getValue() == 1) {
+		/*if (values.get(values.size() - 1).getValue() == 1) {
 			presence = true;
-			startTime = values.get(values.size()).getTimestamp();
-		}
+			startTime = values.get(values.size() - 1).getTimestamp();
+		}*/
 
 		for (int i = values.size() - 1; i >= 0; i--) {
 

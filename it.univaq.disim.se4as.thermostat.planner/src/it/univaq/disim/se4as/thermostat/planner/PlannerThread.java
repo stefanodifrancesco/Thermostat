@@ -39,6 +39,7 @@ public class PlannerThread extends Thread {
 				while (true) {
 
 					plan();
+					System.out.println("Planner plan called");
 
 					Thread.sleep(10000);
 				}
@@ -61,7 +62,7 @@ public class PlannerThread extends Thread {
 
 		for (String room : databaseAPI.getRooms()) {
 
-			List<PresencePrediction> presences = databaseAPI.getPresenceHistory(room, DayOfWeek.values()[day]);
+			List<PresencePrediction> presences = databaseAPI.getPresenceHistory(room, DayOfWeek.values()[day - 1]);
 
 			TemperatureTrend currentTrend = null;
 			for (TemperatureTrend trend : trends) {
@@ -90,23 +91,54 @@ public class PlannerThread extends Thread {
 			targetTemperature = 20D;
 		}
 
+		System.out.println(currentPresence);
 		if (currentPresence == 0) { // no presence
 
-			Date currentDate = new Date();
+			Calendar currentDate = Calendar.getInstance();
+			currentDate.setTime(new Date());
+			
+			Calendar intervalDate = Calendar.getInstance();
+			
+			long difference = 0L;
 
-			Long difference = 0L;
-
+			// Iterates over the intervals of the table 'presences' 
 			for (int i = 0; i < presences.size(); i++) {
 
-				if (currentDate.after(presences.get(i).getEndTime())) {
-
+				intervalDate.setTime(presences.get(i).getEndTime());
+				
+				System.out.println(presences.get(i).getEndTime().toString());
+				
+				System.out.println("Interval year: " + intervalDate.get(Calendar.YEAR));
+				System.out.println("Current year: " + currentDate.get(Calendar.YEAR));
+				System.out.println("Interval month: " + intervalDate.get(Calendar.MONTH));
+				System.out.println("Current month: " + currentDate.get(Calendar.MONTH));
+				System.out.println("Interval day: " + intervalDate.get(Calendar.DAY_OF_MONTH));
+				System.out.println("Current day: " + currentDate.get(Calendar.DAY_OF_MONTH));
+				
+				System.out.println("Interval hour: " + intervalDate.get(Calendar.HOUR_OF_DAY));
+				System.out.println("Current hour: " + currentDate.get(Calendar.HOUR_OF_DAY));
+				System.out.println("Interval miute: " + intervalDate.get(Calendar.MINUTE));
+				System.out.println("Current minute: " + currentDate.get(Calendar.MINUTE));
+				System.out.println("Interval second: " + intervalDate.get(Calendar.SECOND));
+				System.out.println("Current second: " + currentDate.get(Calendar.SECOND));
+				
+				intervalDate.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
+				
+				if (currentDate.after(intervalDate)) {
+					// old interval
 				} else {
 
-					if (presences.get(i).getStartTime().before(currentDate)) { // inside prediction interval
-
+					intervalDate.setTime(presences.get(i).getStartTime());
+					intervalDate.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
+					
+					if (intervalDate.before(currentDate)) { 
+						// inside prediction interval
 					} else {
-						difference = (presences.get(i).getStartTime().getTime() - currentDate.getTime()) / 1000;
+						// We calculate the time remaining until this interval starts
+						difference = (intervalDate.getTimeInMillis() - currentDate.getTimeInMillis()) / 1000;
 					}
+					
+					break;
 				}
 
 			}

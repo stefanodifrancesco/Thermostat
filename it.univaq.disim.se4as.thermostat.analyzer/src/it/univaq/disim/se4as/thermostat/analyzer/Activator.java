@@ -24,7 +24,7 @@ public class Activator implements BundleActivator {
 		AnalyzerAPI analyzerAPI = new Analyzer(bundleContext);
 		analyzerAPI.startAnalysis();
 		
-		context.registerService(Analyzer.class.getName(), analyzerAPI , null);
+		context.registerService(AnalyzerAPI.class.getName(), analyzerAPI , null);
 		
 	}
 

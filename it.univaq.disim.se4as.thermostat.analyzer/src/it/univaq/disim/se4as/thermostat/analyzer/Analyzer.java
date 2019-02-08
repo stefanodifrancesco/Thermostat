@@ -46,7 +46,7 @@ public class Analyzer implements AnalyzerAPI{
 			double slope = 0;
 
 			int t4 = 0;
-			int t1 = 10;
+			int t1 = 5;
 			double T4 = values.get(t4).getValue();
 			double T1 = values.get(t1).getValue();
 			int deltaTime = t1 - t4;

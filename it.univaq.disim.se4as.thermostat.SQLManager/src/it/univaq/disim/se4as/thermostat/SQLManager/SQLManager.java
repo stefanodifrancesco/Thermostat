@@ -88,10 +88,10 @@ public class SQLManager implements DatabaseAPI{
 			try {
 				connection = DriverManager.getConnection("jdbc:mysql://" + server + "/" + database + "?" + "user="
 						+ user + "&password=" + password
-						+ "&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+						+ "&serverTimezone=UTC");
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				e.printStackTrace();
 			}
 
 		}
@@ -307,7 +307,7 @@ public class SQLManager implements DatabaseAPI{
 		PreparedStatement preparedStatement;
 		try {
 
-			query = "SELECT day, start, end, room " + "	FROM presences " + " WHERE day = ? and room = ? ";
+			query = "SELECT day, start, end, room " + "	FROM presences " + " WHERE room = ? and day = ? ";
 
 			preparedStatement = connection.prepareStatement(query);
 
