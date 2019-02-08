@@ -106,7 +106,7 @@ public class PlannerThread extends Thread {
 
 				intervalDate.setTime(presences.get(i).getEndTime());
 				
-				System.out.println(presences.get(i).getEndTime().toString());
+				/*System.out.println(presences.get(i).getEndTime().toString());
 				
 				System.out.println("Interval year: " + intervalDate.get(Calendar.YEAR));
 				System.out.println("Current year: " + currentDate.get(Calendar.YEAR));
@@ -120,7 +120,7 @@ public class PlannerThread extends Thread {
 				System.out.println("Interval miute: " + intervalDate.get(Calendar.MINUTE));
 				System.out.println("Current minute: " + currentDate.get(Calendar.MINUTE));
 				System.out.println("Interval second: " + intervalDate.get(Calendar.SECOND));
-				System.out.println("Current second: " + currentDate.get(Calendar.SECOND));
+				System.out.println("Current second: " + currentDate.get(Calendar.SECOND));*/
 				
 				intervalDate.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
 				
@@ -148,6 +148,8 @@ public class PlannerThread extends Thread {
 			} else {
 				if (difference < 3600) {
 					executor.setHeater(OnOff.ON, room);
+				}else {
+					executor.setHeater(OnOff.OFF, room);
 				}
 			}
 
