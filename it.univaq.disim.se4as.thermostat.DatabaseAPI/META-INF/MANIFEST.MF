@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: DatabaseAPI
+Bundle-SymbolicName: it.univaq.disim.se4as.thermostat.DatabaseAPI
+Bundle-Version: 1.0.0.qualifier
+Automatic-Module-Name: it.univaq.disim.se4as.thermostat.DatabaseAPI
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: it.univaq.disim.se4as.thermostat.Models
+Export-Package: it.univaq.disim.se4as.thermostat.DatabaseAPI
