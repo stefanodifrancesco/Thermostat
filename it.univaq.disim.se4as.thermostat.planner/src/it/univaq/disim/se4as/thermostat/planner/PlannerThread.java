@@ -91,82 +91,128 @@ public class PlannerThread extends Thread {
 			targetTemperature = 20D;
 		}
 
-		System.out.println(currentPresence);
-		if (currentPresence == 0) { // no presence
-
-			Calendar currentDate = Calendar.getInstance();
-			currentDate.setTime(new Date());
-			
-			Calendar intervalDate = Calendar.getInstance();
-			
-			long difference = 0L;
-
-			// Iterates over the intervals of the table 'presences' 
-			for (int i = 0; i < presences.size(); i++) {
-
-				intervalDate.setTime(presences.get(i).getEndTime());
-				
-				/*System.out.println(presences.get(i).getEndTime().toString());
-				
-				System.out.println("Interval year: " + intervalDate.get(Calendar.YEAR));
-				System.out.println("Current year: " + currentDate.get(Calendar.YEAR));
-				System.out.println("Interval month: " + intervalDate.get(Calendar.MONTH));
-				System.out.println("Current month: " + currentDate.get(Calendar.MONTH));
-				System.out.println("Interval day: " + intervalDate.get(Calendar.DAY_OF_MONTH));
-				System.out.println("Current day: " + currentDate.get(Calendar.DAY_OF_MONTH));
-				
-				System.out.println("Interval hour: " + intervalDate.get(Calendar.HOUR_OF_DAY));
-				System.out.println("Current hour: " + currentDate.get(Calendar.HOUR_OF_DAY));
-				System.out.println("Interval miute: " + intervalDate.get(Calendar.MINUTE));
-				System.out.println("Current minute: " + currentDate.get(Calendar.MINUTE));
-				System.out.println("Interval second: " + intervalDate.get(Calendar.SECOND));
-				System.out.println("Current second: " + currentDate.get(Calendar.SECOND));*/
-				
-				intervalDate.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
-				
-				if (currentDate.after(intervalDate)) {
-					// old interval
-				} else {
-
-					intervalDate.setTime(presences.get(i).getStartTime());
-					intervalDate.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
-					
-					if (intervalDate.before(currentDate)) { 
-						// inside prediction interval
-					} else {
-						// We calculate the time remaining until this interval starts
-						difference = (intervalDate.getTimeInMillis() - currentDate.getTimeInMillis()) / 1000;
-					}
-					
-					break;
-				}
-
-			}
-
-			if (currentTrend.getSlope() >= 0 && currentTemperature >= targetTemperature) {
-				executor.setHeater(OnOff.OFF, room);
-			} else {
-				if (difference < 3600) {
-					executor.setHeater(OnOff.ON, room);
-				}else {
-					executor.setHeater(OnOff.OFF, room);
-				}
-			}
-
-		} else { // presence
+		if (currentPresence == 0) { // There are NO people in the room
 
 			if (currentTemperature >= targetTemperature) {
 
 				if (currentTrend.getSlope() >= 0) {
 					executor.setHeater(OnOff.OFF, room);
 				} else {
-					executor.setHeater(OnOff.ON, room);
+
+					if (getComingHomePrediction(presences) < 3600) {						
+						executor.setHeater(OnOff.ON, room);						
+					} else {						
+						executor.setHeater(OnOff.OFF, room);						
+					}
+					
+				}
+			} else {
+				executor.setHeater(OnOff.ON, room);
+			}
+		} else { // There are people in the room
+
+			if (currentTemperature >= targetTemperature) {
+
+				if (currentTrend.getSlope() >= 0) {
+					executor.setHeater(OnOff.OFF, room);
+				} else {
+
+					if (getExitTimePrediction(presences) > 3600) {						
+						executor.setHeater(OnOff.ON, room);						
+					} else {						
+						executor.setHeater(OnOff.OFF, room);						
+					}
+					
 				}
 			} else {
 				executor.setHeater(OnOff.ON, room);
 			}
 		}
 
+	}
+
+	public Long getComingHomePrediction(List<PresencePrediction> presences) {
+
+		Calendar currentDate = Calendar.getInstance();
+		currentDate.setTime(new Date());
+
+		Calendar intervalStartTime = Calendar.getInstance();
+		Calendar intervalEndTime = Calendar.getInstance();
+
+		long difference = 0L;
+
+		// Iterates over the intervals of the table 'presences'
+		for (int i = 0; i < presences.size(); i++) {
+
+			// Sets the end time of the interval
+			intervalEndTime.setTime(presences.get(i).getEndTime());
+			intervalEndTime.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH),
+					currentDate.get(Calendar.DAY_OF_MONTH));
+
+			if (currentDate.after(intervalEndTime)) {
+				// previous interval
+			} else {
+
+				// Sets the start time of the interval
+				intervalStartTime.setTime(presences.get(i).getStartTime());
+				intervalStartTime.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH),
+						currentDate.get(Calendar.DAY_OF_MONTH));
+
+				if (intervalStartTime.before(currentDate)) {
+					// inside prediction interval
+				} else {
+					// We calculate the time remaining until this interval starts
+					difference = (intervalStartTime.getTimeInMillis() - currentDate.getTimeInMillis()) / 1000;
+				}
+
+				break;
+			}
+		}
+
+		return difference;
+	}
+	
+	public Long getExitTimePrediction(List<PresencePrediction> presences) {
+
+		Calendar currentDate = Calendar.getInstance();
+		currentDate.setTime(new Date());
+
+		Calendar intervalStartTime = Calendar.getInstance();
+		Calendar intervalEndTime = Calendar.getInstance();
+
+		long timeToExit = 0L;
+
+		// Iterates over the intervals of the table 'presences'
+		for (int i = 0; i < presences.size(); i++) {
+
+			// Sets the end time of the interval
+			intervalEndTime.setTime(presences.get(i).getEndTime());
+			intervalEndTime.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH),
+					currentDate.get(Calendar.DAY_OF_MONTH));
+
+			if (currentDate.after(intervalEndTime)) {
+				// previous interval
+			} else {
+
+				// Sets the start time of the interval
+				intervalStartTime.setTime(presences.get(i).getStartTime());
+				intervalStartTime.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH),
+						currentDate.get(Calendar.DAY_OF_MONTH));
+
+				if (intervalStartTime.before(currentDate)) {
+					// inside prediction interval
+					// we calculate the time remaining until this interval ends
+					timeToExit = (intervalEndTime.getTimeInMillis() - currentDate.getTimeInMillis()) / 1000;
+				} else {
+					// Wrong presence prediction but we calculate the predicted time remaining until people exit 
+					timeToExit = (intervalEndTime.getTimeInMillis() - currentDate.getTimeInMillis()) / 1000;
+				}
+
+				break;
+			}
+		}
+
+		return timeToExit;
 	}
 
 	public Map<String, Double> getThresholds() {
