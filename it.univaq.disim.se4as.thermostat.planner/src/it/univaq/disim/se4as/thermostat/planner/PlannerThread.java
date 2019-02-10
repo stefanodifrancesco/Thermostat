@@ -99,7 +99,7 @@ public class PlannerThread extends Thread {
 					executor.setHeater(OnOff.OFF, room);
 				} else {
 
-					if (getComingHomePrediction(presences) < 3600) {
+					if (getExitTimePrediction(presences) > 3600) {
 						executor.setHeater(OnOff.ON, room);
 					} else {
 						executor.setHeater(OnOff.OFF, room);
@@ -115,7 +115,7 @@ public class PlannerThread extends Thread {
 				executor.setHeater(OnOff.OFF, room);
 			} else {
 
-				if (getExitTimePrediction(presences) > 3600) {
+				if (getComebackTimePrediction(presences) < 3600) {
 					executor.setHeater(OnOff.ON, room);
 				} else {
 					executor.setHeater(OnOff.OFF, room);
@@ -126,10 +126,10 @@ public class PlannerThread extends Thread {
 
 	}
 
-	public Long getComingHomePrediction(List<PresencePrediction> presences) {
+	public Long getComebackTimePrediction(List<PresencePrediction> presences) {
 
-		Calendar currentDate = Calendar.getInstance();
-		currentDate.setTime(new Date());
+		Calendar currentTime = Calendar.getInstance();
+		currentTime.setTime(new Date());
 
 		Calendar intervalStartTime = Calendar.getInstance();
 		Calendar intervalEndTime = Calendar.getInstance();
@@ -141,23 +141,26 @@ public class PlannerThread extends Thread {
 
 			// Sets the end time of the interval
 			intervalEndTime.setTime(presences.get(i).getEndTime());
-			intervalEndTime.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH),
-					currentDate.get(Calendar.DAY_OF_MONTH));
+			intervalEndTime.set(currentTime.get(Calendar.YEAR), currentTime.get(Calendar.MONTH),
+					currentTime.get(Calendar.DAY_OF_MONTH));
 
-			if (currentDate.after(intervalEndTime)) {
+			if (currentTime.after(intervalEndTime)) {
 				// previous interval
 			} else {
 
 				// Sets the start time of the interval
 				intervalStartTime.setTime(presences.get(i).getStartTime());
-				intervalStartTime.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH),
-						currentDate.get(Calendar.DAY_OF_MONTH));
+				intervalStartTime.set(currentTime.get(Calendar.YEAR), currentTime.get(Calendar.MONTH),
+						currentTime.get(Calendar.DAY_OF_MONTH));
 
-				if (intervalStartTime.before(currentDate)) {
+				if (intervalStartTime.before(currentTime)) {
 					// inside prediction interval
+					// prediction wrong
+					// set difference to 0 because people are already inside the room
+					difference = 0L;
 				} else {
 					// We calculate the time remaining until this interval starts
-					difference = (intervalStartTime.getTimeInMillis() - currentDate.getTimeInMillis()) / 1000;
+					difference = (intervalStartTime.getTimeInMillis() - currentTime.getTimeInMillis()) / 1000;
 				}
 
 				break;
@@ -169,8 +172,8 @@ public class PlannerThread extends Thread {
 
 	public Long getExitTimePrediction(List<PresencePrediction> presences) {
 
-		Calendar currentDate = Calendar.getInstance();
-		currentDate.setTime(new Date());
+		Calendar currentTime = Calendar.getInstance();
+		currentTime.setTime(new Date());
 
 		Calendar intervalStartTime = Calendar.getInstance();
 		Calendar intervalEndTime = Calendar.getInstance();
@@ -182,26 +185,26 @@ public class PlannerThread extends Thread {
 
 			// Sets the end time of the interval
 			intervalEndTime.setTime(presences.get(i).getEndTime());
-			intervalEndTime.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH),
-					currentDate.get(Calendar.DAY_OF_MONTH));
+			intervalEndTime.set(currentTime.get(Calendar.YEAR), currentTime.get(Calendar.MONTH),
+					currentTime.get(Calendar.DAY_OF_MONTH));
 
-			if (currentDate.after(intervalEndTime)) {
+			if (currentTime.after(intervalEndTime)) {
 				// previous interval
 			} else {
 
 				// Sets the start time of the interval
 				intervalStartTime.setTime(presences.get(i).getStartTime());
-				intervalStartTime.set(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH),
-						currentDate.get(Calendar.DAY_OF_MONTH));
+				intervalStartTime.set(currentTime.get(Calendar.YEAR), currentTime.get(Calendar.MONTH),
+						currentTime.get(Calendar.DAY_OF_MONTH));
 
-				if (intervalStartTime.before(currentDate)) {
+				if (intervalStartTime.before(currentTime)) {
 					// inside prediction interval
 					// we calculate the time remaining until this interval ends
-					timeToExit = (intervalEndTime.getTimeInMillis() - currentDate.getTimeInMillis()) / 1000;
+					timeToExit = (intervalEndTime.getTimeInMillis() - currentTime.getTimeInMillis()) / 1000;
 				} else {
 					// Wrong presence prediction but we calculate the predicted time remaining until
 					// people exit
-					timeToExit = (intervalEndTime.getTimeInMillis() - currentDate.getTimeInMillis()) / 1000;
+					timeToExit = (intervalEndTime.getTimeInMillis() - currentTime.getTimeInMillis()) / 1000;
 				}
 
 				break;
