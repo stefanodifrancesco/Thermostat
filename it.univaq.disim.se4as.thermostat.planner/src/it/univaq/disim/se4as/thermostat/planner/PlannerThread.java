@@ -74,13 +74,13 @@ public class PlannerThread extends Thread {
 			Double currentTemperature = databaseAPI.getSensedData(room, "temperature", Interval.LAST).get(0).getValue();
 			Double currentPresence = databaseAPI.getSensedData(room, "presence", Interval.LAST).get(0).getValue();
 
-			calculatePlan(currentTemperature, currentTrend, currentPresence, day, presences, room);
+			calculatePlan(currentTemperature, currentTrend, currentPresence, presences, room);
 		}
 
 	}
 
 	private void calculatePlan(Double currentTemperature, TemperatureTrend currentTrend, Double currentPresence,
-			int day, List<PresencePrediction> presences, String room) {
+			List<PresencePrediction> presences, String room) {
 
 		// Get the target temperature of the room
 		Double targetTemperature = 0D;
@@ -91,7 +91,7 @@ public class PlannerThread extends Thread {
 			targetTemperature = 20D;
 		}
 
-		if (currentPresence == 0) { // There are NO people in the room
+		if (currentPresence == 1) { // There are people in the room
 
 			if (currentTemperature >= targetTemperature) {
 
@@ -99,33 +99,28 @@ public class PlannerThread extends Thread {
 					executor.setHeater(OnOff.OFF, room);
 				} else {
 
-					if (getComingHomePrediction(presences) < 3600) {						
-						executor.setHeater(OnOff.ON, room);						
-					} else {						
-						executor.setHeater(OnOff.OFF, room);						
+					if (getComingHomePrediction(presences) < 3600) {
+						executor.setHeater(OnOff.ON, room);
+					} else {
+						executor.setHeater(OnOff.OFF, room);
 					}
-					
+
 				}
 			} else {
 				executor.setHeater(OnOff.ON, room);
 			}
-		} else { // There are people in the room
+		} else { // There are NO people in the room
 
-			if (currentTemperature >= targetTemperature) {
-
-				if (currentTrend.getSlope() >= 0) {
-					executor.setHeater(OnOff.OFF, room);
-				} else {
-
-					if (getExitTimePrediction(presences) > 3600) {						
-						executor.setHeater(OnOff.ON, room);						
-					} else {						
-						executor.setHeater(OnOff.OFF, room);						
-					}
-					
-				}
+			if (currentTrend.getSlope() >= 0 && currentTemperature >= targetTemperature) {
+				executor.setHeater(OnOff.OFF, room);
 			} else {
-				executor.setHeater(OnOff.ON, room);
+
+				if (getExitTimePrediction(presences) > 3600) {
+					executor.setHeater(OnOff.ON, room);
+				} else {
+					executor.setHeater(OnOff.OFF, room);
+				}
+
 			}
 		}
 
@@ -171,7 +166,7 @@ public class PlannerThread extends Thread {
 
 		return difference;
 	}
-	
+
 	public Long getExitTimePrediction(List<PresencePrediction> presences) {
 
 		Calendar currentDate = Calendar.getInstance();
@@ -204,7 +199,8 @@ public class PlannerThread extends Thread {
 					// we calculate the time remaining until this interval ends
 					timeToExit = (intervalEndTime.getTimeInMillis() - currentDate.getTimeInMillis()) / 1000;
 				} else {
-					// Wrong presence prediction but we calculate the predicted time remaining until people exit 
+					// Wrong presence prediction but we calculate the predicted time remaining until
+					// people exit
 					timeToExit = (intervalEndTime.getTimeInMillis() - currentDate.getTimeInMillis()) / 1000;
 				}
 
