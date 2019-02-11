@@ -12,12 +12,10 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.osgi.framework.BundleContext;
 
-public class Executor {
-	private String hostMQTT;
+import it.univaq.disim.se4as.thermostat.executorAPI.ExecutorAPI;
 
-	public enum OnOff {
-		ON, OFF
-	}
+public class Executor implements ExecutorAPI{
+	private String hostMQTT;
 
 	public Executor(BundleContext context) {
 		setConfiguration(context);

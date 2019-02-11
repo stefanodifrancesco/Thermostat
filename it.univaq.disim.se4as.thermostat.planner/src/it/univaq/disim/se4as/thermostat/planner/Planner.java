@@ -22,7 +22,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import it.univaq.disim.se4as.thermostat.AnalyzerAPI.AnalyzerAPI;
 import it.univaq.disim.se4as.thermostat.DatabaseAPI.DatabaseAPI;
-import it.univaq.disim.se4as.thermostat.executor.Executor;
+import it.univaq.disim.se4as.thermostat.executorAPI.ExecutorAPI;
 
 public class Planner implements MqttCallback{
 
@@ -47,7 +47,7 @@ public class Planner implements MqttCallback{
 		connect();
 		subscribe();
 
-		plannerThread = new PlannerThread(getDatabaseAPIInstance(), getAnalyzerAPIInstance(), getExecutorInstance());
+		plannerThread = new PlannerThread(getDatabaseAPIInstance(), getAnalyzerAPIInstance(), getExecutorAPIInstance());
 		plannerThread.start();
 		System.out.println("Planner started!");
 
@@ -182,7 +182,6 @@ public class Planner implements MqttCallback{
 			}
 
 		} catch (InvalidSyntaxException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -210,30 +209,28 @@ public class Planner implements MqttCallback{
 			}
 
 		} catch (InvalidSyntaxException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
 		return analyzerInstance;
 	}
 
-	public Executor getExecutorInstance() {
+	public ExecutorAPI getExecutorAPIInstance() {
 
 		ServiceReference<?>[] refs;
 
 		try {
-			refs = context.getAllServiceReferences(Executor.class.getName(), null);
+			refs = context.getAllServiceReferences(ExecutorAPI.class.getName(), null);
 
 			if (refs != null) {
 
 				if (refs[0] != null) {
-					Executor executorInstance = (Executor) context.getService(refs[0]);
+					ExecutorAPI executorInstance = (ExecutorAPI) context.getService(refs[0]);
 					return executorInstance;
 				}
 			}
 
 		} catch (InvalidSyntaxException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 

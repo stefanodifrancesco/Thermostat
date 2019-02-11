@@ -6,8 +6,8 @@ import it.univaq.disim.se4as.thermostat.DatabaseAPI.DatabaseAPI.DayOfWeek;
 import it.univaq.disim.se4as.thermostat.DatabaseAPI.DatabaseAPI.Interval;
 import it.univaq.disim.se4as.thermostat.Models.PresencePrediction;
 import it.univaq.disim.se4as.thermostat.Models.TemperatureTrend;
-import it.univaq.disim.se4as.thermostat.executor.Executor;
-import it.univaq.disim.se4as.thermostat.executor.Executor.OnOff;
+import it.univaq.disim.se4as.thermostat.executorAPI.ExecutorAPI;
+import it.univaq.disim.se4as.thermostat.executorAPI.ExecutorAPI.OnOff;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -20,11 +20,11 @@ public class PlannerThread extends Thread {
 
 	private DatabaseAPI databaseAPI;
 	private AnalyzerAPI analyzer;
-	private Executor executor;
+	private ExecutorAPI executor;
 
 	private Map<String, Double> thresholds = new HashMap<>();
 
-	public PlannerThread(DatabaseAPI databaseAPI, AnalyzerAPI analyzerInstance, Executor executor) {
+	public PlannerThread(DatabaseAPI databaseAPI, AnalyzerAPI analyzerInstance, ExecutorAPI executor) {
 		this.databaseAPI = databaseAPI;
 		this.analyzer = analyzerInstance;
 		this.executor = executor;
