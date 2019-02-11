@@ -12,17 +12,17 @@ import it.univaq.disim.se4as.thermostat.DatabaseAPI.DatabaseAPI.Interval;
 import it.univaq.disim.se4as.thermostat.Models.SensedValue;
 import it.univaq.disim.se4as.thermostat.Models.TemperatureTrend;
 
-public class Analyzer implements AnalyzerAPI{
+public class Analyzer implements AnalyzerAPI {
 
 	private BundleContext context;
-	
+
 	private AnalysisThread analysisThread;
 	private DatabaseAPI databaseAPI;
 
 	public Analyzer(BundleContext context) {
 		this.context = context;
 	}
-	
+
 	public void startAnalysis() {
 
 		databaseAPI = getDatabaseAPIInstance();
@@ -44,14 +44,19 @@ public class Analyzer implements AnalyzerAPI{
 			trend.setRoom(room);
 
 			double slope = 0;
+			try {
 
-			int t4 = 0;
-			int t1 = 5;
-			double T4 = values.get(t4).getValue();
-			double T1 = values.get(t1).getValue();
-			int deltaTime = t1 - t4;
+				int t4 = 0;
+				int t1 = 5;
+				double T4 = values.get(t4).getValue();
+				double T1 = values.get(t1).getValue();
+				int deltaTime = t1 - t4;
 
-			slope = (T4 - T1) / deltaTime;
+				slope = (T4 - T1) / deltaTime;
+
+			} catch (Exception e) {
+				slope = 0d;
+			}
 
 			trend.setSlope(slope);
 			System.out.println("slope" + slope);
@@ -60,7 +65,7 @@ public class Analyzer implements AnalyzerAPI{
 
 		return trends;
 	}
-	
+
 	public DatabaseAPI getDatabaseAPIInstance() {
 
 		ServiceReference<?>[] refs;

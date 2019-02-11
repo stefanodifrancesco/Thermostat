@@ -81,7 +81,7 @@ public class Planner implements MqttCallback{
 		try {
 		
 			
-			mqttClient.subscribe("home/thresholds/#");
+			mqttClient.subscribe("home/threshold/#");
 			
 		} catch (MqttException e) {
 		      e.printStackTrace();

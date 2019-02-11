@@ -263,7 +263,7 @@ public class SQLManager implements DatabaseAPI{
 
 			query = "SELECT timestamp, value, sensor_type, room " + " FROM se4as.sensed_values "
 					+ "WHERE sensor_type = 'presence' " + " AND room = ? " + " AND DAYNAME(timestamp) = ? "
-					+ " AND timestamp BETWEEN DATE_SUB(NOW(), INTERVAL 14 DAY) AND NOW()" + " ORDER BY date_format(timestamp, \"%H:%i\") DESC ";
+					+ " AND timestamp BETWEEN DATE_SUB(NOW(), INTERVAL 14 DAY) AND DATE_SUB(NOW(), INTERVAL 1 DAY) " + " ORDER BY date_format(timestamp, \"%H:%i\") DESC ";
 
 			preparedStatement = connection.prepareStatement(query);
 
