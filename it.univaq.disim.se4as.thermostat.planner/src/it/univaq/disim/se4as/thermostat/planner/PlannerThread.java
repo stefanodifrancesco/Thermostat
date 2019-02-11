@@ -85,10 +85,15 @@ public class PlannerThread extends Thread {
 		// Get the target temperature of the room
 		Double targetTemperature = 0D;
 
-		if (thresholds.get(room) != null) {
-			targetTemperature = thresholds.get(room);
-		} else {
+		for (String entry : thresholds.keySet()) {
+			if (room.contains(entry)) {
+				targetTemperature = thresholds.get(entry);
+			}
+		}
+		// if room not found
+		if (targetTemperature == 0D) {
 			targetTemperature = 20D;
+			System.out.println("Threshold for room: " + room + " not found.");
 		}
 
 		if (currentPresence == 1) { // There are people in the room
