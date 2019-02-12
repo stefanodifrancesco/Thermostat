@@ -90,7 +90,7 @@
           },
           "configuration": {
             "properties": {
-              "stateTopic": "home/bedroom_1/heater"
+              "stateTopic": "home/bedroom/heater"
             }
           },
           "properties": {},
@@ -165,7 +165,7 @@
           },
           "configuration": {
             "properties": {
-              "stateTopic": "home/toilet_1/heater"
+              "stateTopic": "home/toilet/heater"
             }
           },
           "properties": {},

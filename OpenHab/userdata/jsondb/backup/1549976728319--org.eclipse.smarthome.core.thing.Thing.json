@@ -7,7 +7,7 @@
       "configuration": {
         "properties": {
           "publickeypin": true,
-          "clientid": "paho10113599540528",
+          "clientid": "paho2233452974924",
           "lastwill_qos": 0,
           "qos": 0,
           "retain": true,
@@ -90,7 +90,7 @@
           },
           "configuration": {
             "properties": {
-              "stateTopic": "home/bedroom_1/heater"
+              "stateTopic": "home/bedroom/heater"
             }
           },
           "properties": {},
@@ -165,7 +165,7 @@
           },
           "configuration": {
             "properties": {
-              "stateTopic": "home/toilet_1/heater"
+              "stateTopic": "home/toilet/heater"
             }
           },
           "properties": {},
