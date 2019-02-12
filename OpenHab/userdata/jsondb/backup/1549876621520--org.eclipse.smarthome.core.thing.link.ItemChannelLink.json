@@ -1,0 +1,206 @@
+{
+  "mqtt_topic_0c86e07d_toilet2 -\u003e mqtt:topic:0c86e07d:toilet2": {
+    "class": "org.eclipse.smarthome.core.thing.link.ItemChannelLink",
+    "value": {
+      "channelUID": {
+        "segments": [
+          "mqtt",
+          "topic",
+          "0c86e07d",
+          "toilet2"
+        ]
+      },
+      "configuration": {
+        "properties": {}
+      },
+      "itemName": "mqtt_topic_0c86e07d_toilet2"
+    }
+  },
+  "mqtt_topic_0c86e07d_livingroom -\u003e mqtt:topic:0c86e07d:livingroom": {
+    "class": "org.eclipse.smarthome.core.thing.link.ItemChannelLink",
+    "value": {
+      "channelUID": {
+        "segments": [
+          "mqtt",
+          "topic",
+          "0c86e07d",
+          "livingroom"
+        ]
+      },
+      "configuration": {
+        "properties": {}
+      },
+      "itemName": "mqtt_topic_0c86e07d_livingroom"
+    }
+  },
+  "mqtt_topic_0c86e07d_kitchenHeater -\u003e mqtt:topic:0c86e07d:kitchenHeater": {
+    "class": "org.eclipse.smarthome.core.thing.link.ItemChannelLink",
+    "value": {
+      "channelUID": {
+        "segments": [
+          "mqtt",
+          "topic",
+          "0c86e07d",
+          "kitchenHeater"
+        ]
+      },
+      "configuration": {
+        "properties": {}
+      },
+      "itemName": "mqtt_topic_0c86e07d_kitchenHeater"
+    }
+  },
+  "mqtt_topic_0c86e07d_bedroom1 -\u003e mqtt:topic:0c86e07d:bedroom1": {
+    "class": "org.eclipse.smarthome.core.thing.link.ItemChannelLink",
+    "value": {
+      "channelUID": {
+        "segments": [
+          "mqtt",
+          "topic",
+          "0c86e07d",
+          "bedroom1"
+        ]
+      },
+      "configuration": {
+        "properties": {}
+      },
+      "itemName": "mqtt_topic_0c86e07d_bedroom1"
+    }
+  },
+  "mqtt_topic_0c86e07d_toiletHeater_2 -\u003e mqtt:topic:0c86e07d:toiletHeater_2": {
+    "class": "org.eclipse.smarthome.core.thing.link.ItemChannelLink",
+    "value": {
+      "channelUID": {
+        "segments": [
+          "mqtt",
+          "topic",
+          "0c86e07d",
+          "toiletHeater_2"
+        ]
+      },
+      "configuration": {
+        "properties": {}
+      },
+      "itemName": "mqtt_topic_0c86e07d_toiletHeater_2"
+    }
+  },
+  "mqtt_topic_0c86e07d_livingroomHeater -\u003e mqtt:topic:0c86e07d:livingroomHeater": {
+    "class": "org.eclipse.smarthome.core.thing.link.ItemChannelLink",
+    "value": {
+      "channelUID": {
+        "segments": [
+          "mqtt",
+          "topic",
+          "0c86e07d",
+          "livingroomHeater"
+        ]
+      },
+      "configuration": {
+        "properties": {}
+      },
+      "itemName": "mqtt_topic_0c86e07d_livingroomHeater"
+    }
+  },
+  "mqtt_topic_0c86e07d_bedroomHeater_2 -\u003e mqtt:topic:0c86e07d:bedroomHeater_2": {
+    "class": "org.eclipse.smarthome.core.thing.link.ItemChannelLink",
+    "value": {
+      "channelUID": {
+        "segments": [
+          "mqtt",
+          "topic",
+          "0c86e07d",
+          "bedroomHeater_2"
+        ]
+      },
+      "configuration": {
+        "properties": {}
+      },
+      "itemName": "mqtt_topic_0c86e07d_bedroomHeater_2"
+    }
+  },
+  "mqtt_topic_0c86e07d_bedroomHeater_1 -\u003e mqtt:topic:0c86e07d:bedroomHeater_1": {
+    "class": "org.eclipse.smarthome.core.thing.link.ItemChannelLink",
+    "value": {
+      "channelUID": {
+        "segments": [
+          "mqtt",
+          "topic",
+          "0c86e07d",
+          "bedroomHeater_1"
+        ]
+      },
+      "configuration": {
+        "properties": {}
+      },
+      "itemName": "mqtt_topic_0c86e07d_bedroomHeater_1"
+    }
+  },
+  "mqtt_topic_0c86e07d_toiletHeater_1 -\u003e mqtt:topic:0c86e07d:toiletHeater_1": {
+    "class": "org.eclipse.smarthome.core.thing.link.ItemChannelLink",
+    "value": {
+      "channelUID": {
+        "segments": [
+          "mqtt",
+          "topic",
+          "0c86e07d",
+          "toiletHeater_1"
+        ]
+      },
+      "configuration": {
+        "properties": {}
+      },
+      "itemName": "mqtt_topic_0c86e07d_toiletHeater_1"
+    }
+  },
+  "mqtt_topic_0c86e07d_bedroom2 -\u003e mqtt:topic:0c86e07d:bedroom2": {
+    "class": "org.eclipse.smarthome.core.thing.link.ItemChannelLink",
+    "value": {
+      "channelUID": {
+        "segments": [
+          "mqtt",
+          "topic",
+          "0c86e07d",
+          "bedroom2"
+        ]
+      },
+      "configuration": {
+        "properties": {}
+      },
+      "itemName": "mqtt_topic_0c86e07d_bedroom2"
+    }
+  },
+  "mqtt_topic_0c86e07d_toilet1 -\u003e mqtt:topic:0c86e07d:toilet1": {
+    "class": "org.eclipse.smarthome.core.thing.link.ItemChannelLink",
+    "value": {
+      "channelUID": {
+        "segments": [
+          "mqtt",
+          "topic",
+          "0c86e07d",
+          "toilet1"
+        ]
+      },
+      "configuration": {
+        "properties": {}
+      },
+      "itemName": "mqtt_topic_0c86e07d_toilet1"
+    }
+  },
+  "mqtt_topic_0c86e07d_kitchen -\u003e mqtt:topic:0c86e07d:kitchen": {
+    "class": "org.eclipse.smarthome.core.thing.link.ItemChannelLink",
+    "value": {
+      "channelUID": {
+        "segments": [
+          "mqtt",
+          "topic",
+          "0c86e07d",
+          "kitchen"
+        ]
+      },
+      "configuration": {
+        "properties": {}
+      },
+      "itemName": "mqtt_topic_0c86e07d_kitchen"
+    }
+  }
+}

@@ -1,0 +1,447 @@
+{
+  "mqtt:broker:fbb1f8bd": {
+    "class": "org.eclipse.smarthome.core.thing.internal.BridgeImpl",
+    "value": {
+      "label": "MQTT Broker",
+      "channels": [],
+      "configuration": {
+        "properties": {
+          "publickeypin": true,
+          "clientid": "paho2233452974924",
+          "lastwill_qos": 0,
+          "qos": 0,
+          "retain": true,
+          "host": "localhost",
+          "secure": false,
+          "certificatepin": true,
+          "keep_alive_time": 60000,
+          "reconnect_time": 60000
+        }
+      },
+      "properties": {},
+      "uid": {
+        "segments": [
+          "mqtt",
+          "broker",
+          "fbb1f8bd"
+        ]
+      },
+      "thingTypeUID": {
+        "segments": [
+          "mqtt",
+          "broker"
+        ]
+      }
+    }
+  },
+  "mqtt:topic:0c86e07d": {
+    "class": "org.eclipse.smarthome.core.thing.internal.ThingImpl",
+    "value": {
+      "label": "My MQTT Thing",
+      "bridgeUID": {
+        "segments": [
+          "mqtt",
+          "broker",
+          "fbb1f8bd"
+        ]
+      },
+      "channels": [
+        {
+          "acceptedItemType": "Switch",
+          "kind": "STATE",
+          "uid": {
+            "segments": [
+              "mqtt",
+              "topic",
+              "0c86e07d",
+              "kitchenHeater"
+            ]
+          },
+          "channelTypeUID": {
+            "segments": [
+              "mqtt",
+              "switch"
+            ]
+          },
+          "configuration": {
+            "properties": {
+              "stateTopic": "home/kitchen/heater"
+            }
+          },
+          "properties": {},
+          "defaultTags": []
+        },
+        {
+          "acceptedItemType": "Switch",
+          "kind": "STATE",
+          "uid": {
+            "segments": [
+              "mqtt",
+              "topic",
+              "0c86e07d",
+              "bedroomHeater_1"
+            ]
+          },
+          "channelTypeUID": {
+            "segments": [
+              "mqtt",
+              "switch"
+            ]
+          },
+          "configuration": {
+            "properties": {
+              "stateTopic": "home/bedroom_1/heater"
+            }
+          },
+          "properties": {},
+          "defaultTags": []
+        },
+        {
+          "acceptedItemType": "Switch",
+          "kind": "STATE",
+          "uid": {
+            "segments": [
+              "mqtt",
+              "topic",
+              "0c86e07d",
+              "bedroomHeater_2"
+            ]
+          },
+          "channelTypeUID": {
+            "segments": [
+              "mqtt",
+              "switch"
+            ]
+          },
+          "configuration": {
+            "properties": {
+              "stateTopic": "home/bedroom_2/heater"
+            }
+          },
+          "properties": {},
+          "defaultTags": []
+        },
+        {
+          "acceptedItemType": "Switch",
+          "kind": "STATE",
+          "uid": {
+            "segments": [
+              "mqtt",
+              "topic",
+              "0c86e07d",
+              "livingroomHeater"
+            ]
+          },
+          "channelTypeUID": {
+            "segments": [
+              "mqtt",
+              "switch"
+            ]
+          },
+          "configuration": {
+            "properties": {
+              "stateTopic": "home/livingroom/heater"
+            }
+          },
+          "properties": {},
+          "defaultTags": []
+        },
+        {
+          "acceptedItemType": "Switch",
+          "kind": "STATE",
+          "uid": {
+            "segments": [
+              "mqtt",
+              "topic",
+              "0c86e07d",
+              "toiletHeater_1"
+            ]
+          },
+          "channelTypeUID": {
+            "segments": [
+              "mqtt",
+              "switch"
+            ]
+          },
+          "configuration": {
+            "properties": {
+              "stateTopic": "home/toilet_1/heater"
+            }
+          },
+          "properties": {},
+          "defaultTags": []
+        },
+        {
+          "acceptedItemType": "Switch",
+          "kind": "STATE",
+          "uid": {
+            "segments": [
+              "mqtt",
+              "topic",
+              "0c86e07d",
+              "toiletHeater_2"
+            ]
+          },
+          "channelTypeUID": {
+            "segments": [
+              "mqtt",
+              "switch"
+            ]
+          },
+          "configuration": {
+            "properties": {
+              "stateTopic": "home/toilet_2/heater"
+            }
+          },
+          "properties": {},
+          "defaultTags": []
+        },
+        {
+          "acceptedItemType": "Number",
+          "kind": "STATE",
+          "uid": {
+            "segments": [
+              "mqtt",
+              "topic",
+              "0c86e07d",
+              "livingroom"
+            ]
+          },
+          "channelTypeUID": {
+            "segments": [
+              "mqtt",
+              "number"
+            ]
+          },
+          "configuration": {
+            "properties": {
+              "stateTopic": "home/sensors/livingroom/temperature"
+            }
+          },
+          "properties": {},
+          "defaultTags": []
+        },
+        {
+          "acceptedItemType": "Number",
+          "kind": "STATE",
+          "uid": {
+            "segments": [
+              "mqtt",
+              "topic",
+              "0c86e07d",
+              "bedroom1"
+            ]
+          },
+          "channelTypeUID": {
+            "segments": [
+              "mqtt",
+              "number"
+            ]
+          },
+          "configuration": {
+            "properties": {
+              "stateTopic": "home/sensors/bedroom/temperature"
+            }
+          },
+          "properties": {},
+          "defaultTags": []
+        },
+        {
+          "acceptedItemType": "Number",
+          "kind": "STATE",
+          "uid": {
+            "segments": [
+              "mqtt",
+              "topic",
+              "0c86e07d",
+              "bedroom2"
+            ]
+          },
+          "channelTypeUID": {
+            "segments": [
+              "mqtt",
+              "number"
+            ]
+          },
+          "configuration": {
+            "properties": {
+              "stateTopic": "home/sensors/bedroom2/temperature"
+            }
+          },
+          "properties": {},
+          "defaultTags": []
+        },
+        {
+          "acceptedItemType": "Number",
+          "kind": "STATE",
+          "uid": {
+            "segments": [
+              "mqtt",
+              "topic",
+              "0c86e07d",
+              "toilet1"
+            ]
+          },
+          "channelTypeUID": {
+            "segments": [
+              "mqtt",
+              "number"
+            ]
+          },
+          "configuration": {
+            "properties": {
+              "stateTopic": "home/sensors/toilet/temperature"
+            }
+          },
+          "properties": {},
+          "defaultTags": []
+        },
+        {
+          "acceptedItemType": "Number",
+          "kind": "STATE",
+          "uid": {
+            "segments": [
+              "mqtt",
+              "topic",
+              "0c86e07d",
+              "toilet2"
+            ]
+          },
+          "channelTypeUID": {
+            "segments": [
+              "mqtt",
+              "number"
+            ]
+          },
+          "configuration": {
+            "properties": {
+              "stateTopic": "home/sensors/toilet2/temperature"
+            }
+          },
+          "properties": {},
+          "defaultTags": []
+        },
+        {
+          "acceptedItemType": "Number",
+          "kind": "STATE",
+          "uid": {
+            "segments": [
+              "mqtt",
+              "topic",
+              "0c86e07d",
+              "kitchen"
+            ]
+          },
+          "channelTypeUID": {
+            "segments": [
+              "mqtt",
+              "number"
+            ]
+          },
+          "configuration": {
+            "properties": {
+              "stateTopic": "home/sensors/kitchen/temperature"
+            }
+          },
+          "properties": {},
+          "defaultTags": []
+        },
+        {
+          "acceptedItemType": "Number",
+          "kind": "STATE",
+          "uid": {
+            "segments": [
+              "mqtt",
+              "topic",
+              "0c86e07d",
+              "LivingroomThreshold"
+            ]
+          },
+          "channelTypeUID": {
+            "segments": [
+              "mqtt",
+              "number"
+            ]
+          },
+          "label": "LivingroomThreshold",
+          "configuration": {
+            "properties": {
+              "commandTopic": "home/threshold/livingroomkitchen"
+            }
+          },
+          "properties": {},
+          "defaultTags": []
+        },
+        {
+          "acceptedItemType": "Number",
+          "kind": "STATE",
+          "uid": {
+            "segments": [
+              "mqtt",
+              "topic",
+              "0c86e07d",
+              "BedroomThreshold"
+            ]
+          },
+          "channelTypeUID": {
+            "segments": [
+              "mqtt",
+              "number"
+            ]
+          },
+          "label": "BedroomThreshold",
+          "configuration": {
+            "properties": {
+              "commandTopic": "home/threshold/bedroom"
+            }
+          },
+          "properties": {},
+          "defaultTags": []
+        },
+        {
+          "acceptedItemType": "Number",
+          "kind": "STATE",
+          "uid": {
+            "segments": [
+              "mqtt",
+              "topic",
+              "0c86e07d",
+              "ToiletThreshold"
+            ]
+          },
+          "channelTypeUID": {
+            "segments": [
+              "mqtt",
+              "number"
+            ]
+          },
+          "label": "ToiletThreshold",
+          "configuration": {
+            "properties": {
+              "commandTopic": "home/threshold/toilet"
+            }
+          },
+          "properties": {},
+          "defaultTags": []
+        }
+      ],
+      "configuration": {
+        "properties": {}
+      },
+      "properties": {},
+      "uid": {
+        "segments": [
+          "mqtt",
+          "topic",
+          "0c86e07d"
+        ]
+      },
+      "thingTypeUID": {
+        "segments": [
+          "mqtt",
+          "topic"
+        ]
+      }
+    }
+  }
+}
