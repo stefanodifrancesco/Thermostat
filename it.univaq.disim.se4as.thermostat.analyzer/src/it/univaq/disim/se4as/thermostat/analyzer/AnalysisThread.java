@@ -72,10 +72,6 @@ public class AnalysisThread extends Thread {
 		Timestamp endTime = null;
 
 		Boolean presence = false;
-		/*if (values.get(values.size() - 1).getValue() == 1) {
-			presence = true;
-			startTime = values.get(values.size() - 1).getTimestamp();
-		}*/
 
 		for (int i = values.size() - 1; i >= 0; i--) {
 
@@ -87,6 +83,19 @@ public class AnalysisThread extends Thread {
 
 			if (values.get(i).getValue() == 0 && presence == true) {
 				presence = false;
+
+				endTime = values.get(i).getTimestamp();
+
+				PresencePrediction presencePrediction = new PresencePrediction();
+				presencePrediction.setRoom(room);
+				presencePrediction.setDay(day.toString());
+				presencePrediction.setStartTime(startTime);
+				presencePrediction.setEndTime(endTime);
+				
+				intervalsPredictions.add(presencePrediction);
+			}
+			
+			if (values.get(i).getValue() == 1 && presence == true && i == 0) {
 
 				endTime = values.get(i).getTimestamp();
 
