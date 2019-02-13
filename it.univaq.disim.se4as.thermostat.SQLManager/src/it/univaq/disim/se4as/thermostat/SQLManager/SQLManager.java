@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.osgi.framework.BundleContext;
 
-public class SQLManager implements DatabaseAPI{
+public class SQLManager implements DatabaseAPI {
 
 	private String server;
 	private String database;
@@ -87,8 +87,7 @@ public class SQLManager implements DatabaseAPI{
 		} catch (Exception e) {
 			try {
 				connection = DriverManager.getConnection("jdbc:mysql://" + server + "/" + database + "?" + "user="
-						+ user + "&password=" + password
-						+ "&serverTimezone=UTC");
+						+ user + "&password=" + password + "&serverTimezone=UTC");
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -263,7 +262,8 @@ public class SQLManager implements DatabaseAPI{
 
 			query = "SELECT timestamp, value, sensor_type, room " + " FROM se4as.sensed_values "
 					+ "WHERE sensor_type = 'presence' " + " AND room = ? " + " AND DAYNAME(timestamp) = ? "
-					+ " AND timestamp BETWEEN DATE_SUB(NOW(), INTERVAL 14 DAY) AND DATE_SUB(NOW(), INTERVAL 1 DAY) " + " ORDER BY date_format(timestamp, \"%H:%i\") DESC ";
+					+ " AND timestamp BETWEEN DATE_SUB(NOW(), INTERVAL 15 DAY) AND DATE_SUB(NOW(), INTERVAL 1 DAY) "
+					+ " ORDER BY date_format(timestamp, \"%H:%i\") DESC ";
 
 			preparedStatement = connection.prepareStatement(query);
 
@@ -381,6 +381,101 @@ public class SQLManager implements DatabaseAPI{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public List<SensedValue> getTodayPresenceIntervals(String room) {
+		List<SensedValue> sensedValues = new ArrayList<SensedValue>();
+
+		Connection connection = connect();
+
+		String query;
+
+		// PreparedStatements can use variables and are more efficient
+		PreparedStatement preparedStatement;
+		try {
+
+			query = "SELECT timestamp, value, sensor_type, room FROM se4as.sensed_values "
+					+ "WHERE sensor_type = 'presence' AND room = ? and DAYNAME(timestamp) = DAYNAME(NOW()) "
+					+ "AND timestamp BETWEEN DATE_SUB(NOW(), INTERVAL 2 DAY) AND NOW() "
+					+ "ORDER BY date_format(timestamp, \"%H:%i\") DESC";
+
+			preparedStatement = connection.prepareStatement(query);
+
+			// Parameters start with 1
+			preparedStatement.setString(1, room);
+
+			ResultSet rs;
+
+			rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				SensedValue sensedValue = new SensedValue();
+				sensedValue.setTimestamp(rs.getTimestamp("timestamp"));
+				sensedValue.setSensorType(rs.getString("sensor_type"));
+				sensedValue.setValue(rs.getDouble("value"));
+				sensedValue.setRoom(rs.getString("room"));
+
+				sensedValues.add(sensedValue);
+
+			}
+
+			connection.close();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return sensedValues;
+
+	}
+
+	@Override
+	public void insertTodayPresence(PresencePrediction presencePrediction) {
+		Connection connection = connect();
+
+		// PreparedStatements can use variables and are more efficient
+		PreparedStatement preparedStatement;
+		try {
+
+			preparedStatement = connection.prepareStatement(
+					"INSERT INTO today_presence " 
+						+ "(day, start, end, room) " 
+						+ "VALUES " 
+						+ "(?, ?, ?, ?);");
+
+			// Parameters start with 1
+			preparedStatement.setString(1, presencePrediction.getDay());
+			preparedStatement.setTimestamp(2, presencePrediction.getStartTime());
+			preparedStatement.setTimestamp(3, presencePrediction.getEndTime());
+			preparedStatement.setString(4, presencePrediction.getRoom());
+
+			preparedStatement.executeUpdate();
+
+			connection.close();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public void clearTodayPresence() {
+		Connection connection = connect();
+
+		PreparedStatement preparedStatement;
+		try {
+
+			preparedStatement = connection.prepareStatement("truncate table se4as.today_presence ");
+
+			preparedStatement.executeUpdate();
+			connection.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }

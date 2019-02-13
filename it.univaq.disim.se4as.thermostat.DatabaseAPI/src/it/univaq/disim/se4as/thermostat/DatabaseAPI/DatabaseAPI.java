@@ -30,4 +30,10 @@ public interface DatabaseAPI {
 	
 	public void insertPresenceHistory(PresencePrediction presencePrediction);
 	
+	public List<SensedValue> getTodayPresenceIntervals(String room);
+	
+	public void insertTodayPresence(PresencePrediction presencePrediction);
+	
+	public void clearTodayPresence();
+	
 }
