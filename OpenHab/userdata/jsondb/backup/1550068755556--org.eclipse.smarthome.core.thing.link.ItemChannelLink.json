@@ -50,23 +50,6 @@
       "itemName": "mqtt_topic_0c86e07d_kitchenHeater"
     }
   },
-  "mqtt_topic_0c86e07d_BedroomThreshold -\u003e mqtt:topic:0c86e07d:BedroomThreshold": {
-    "class": "org.eclipse.smarthome.core.thing.link.ItemChannelLink",
-    "value": {
-      "channelUID": {
-        "segments": [
-          "mqtt",
-          "topic",
-          "0c86e07d",
-          "BedroomThreshold"
-        ]
-      },
-      "configuration": {
-        "properties": {}
-      },
-      "itemName": "mqtt_topic_0c86e07d_BedroomThreshold"
-    }
-  },
   "mqtt_topic_0c86e07d_bedroom1 -\u003e mqtt:topic:0c86e07d:bedroom1": {
     "class": "org.eclipse.smarthome.core.thing.link.ItemChannelLink",
     "value": {
@@ -82,6 +65,23 @@
         "properties": {}
       },
       "itemName": "mqtt_topic_0c86e07d_bedroom1"
+    }
+  },
+  "mqtt_topic_0c86e07d_BedroomThreshold -\u003e mqtt:topic:0c86e07d:BedroomThreshold": {
+    "class": "org.eclipse.smarthome.core.thing.link.ItemChannelLink",
+    "value": {
+      "channelUID": {
+        "segments": [
+          "mqtt",
+          "topic",
+          "0c86e07d",
+          "BedroomThreshold"
+        ]
+      },
+      "configuration": {
+        "properties": {}
+      },
+      "itemName": "mqtt_topic_0c86e07d_BedroomThreshold"
     }
   },
   "mqtt_topic_0c86e07d_toiletHeater_2 -\u003e mqtt:topic:0c86e07d:toiletHeater_2": {
