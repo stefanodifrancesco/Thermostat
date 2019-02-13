@@ -115,9 +115,11 @@ public class AnalysisThread extends Thread {
 				calendar.setTime(values.get(i).getTimestamp());
 				int secondDay = calendar.get(Calendar.DAY_OF_YEAR);
 				
+				first = false;
+				
 				if (secondDay != firstDay) {
 					presence = false;
-					first = false;
+					
 					endTime = values.get(i).getTimestamp();
 
 					presencePredictiontemp.setRoom(room);
