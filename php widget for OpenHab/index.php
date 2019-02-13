@@ -19,6 +19,7 @@
 
   $result = mysqli_query($conn, "SELECT * FROM se4as.presences WHERE day = DAYNAME(NOW()) AND room = \"" . $_GET['room'] . "\"");
 
+  
   while($row = mysqli_fetch_array($result)) {
 
     $startStr = $row['start'];
@@ -29,6 +30,24 @@
 
     $data['rows'][] = array('c' => array(
         array('v' => 'Predicted presences'),
+        array('v' => 'Date(' . Date("0, 0, 0, H, i, s", $start) . ')'),
+        array('v' => 'Date(' . Date("0, 0, 0, H, i, s", $end) . ')')
+    ));
+
+  }
+
+  $result = mysqli_query($conn, "SELECT * FROM se4as.today_presences WHERE day = DAYNAME(NOW()) AND room = \"" . $_GET['room'] . "\"");
+
+  while($row = mysqli_fetch_array($result)) {
+
+    $startStr = $row['start'];
+    $finishStr = $row['end'];
+
+    $start = strtotime($startStr);
+    $end = strtotime($finishStr);
+
+    $data['rows'][] = array('c' => array(
+        array('v' => 'Today presences'),
         array('v' => 'Date(' . Date("0, 0, 0, H, i, s", $start) . ')'),
         array('v' => 'Date(' . Date("0, 0, 0, H, i, s", $end) . ')')
     ));
