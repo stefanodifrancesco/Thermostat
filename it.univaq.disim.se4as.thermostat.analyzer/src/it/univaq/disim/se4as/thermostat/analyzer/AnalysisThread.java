@@ -81,8 +81,6 @@ public class AnalysisThread extends Thread {
 		Timestamp endTime = null;
 
 		Boolean presence = false;
-		Boolean first = false;
-		Timestamp timestamp = null;
 
 		for (int i = values.size() - 1; i >= 0; i--) {
 
@@ -92,16 +90,9 @@ public class AnalysisThread extends Thread {
 				startTime = values.get(i).getTimestamp();
 			}
 
-			if (values.get(i).getValue() == 0 && presence == true && first == false) {
-				timestamp = values.get(i).getTimestamp();
-				first = true;
-			}
-
-			if (values.get(i).getValue() == 0 && presence == true && first == true) {
-				if (!values.get(i).getTimestamp().equals(timestamp)) {
-					presence = false;
-					first = false;
-					endTime = values.get(i).getTimestamp();
+			if (values.get(i).getValue() == 0 && presence == true) {
+				presence = false;
+				endTime = values.get(i).getTimestamp();
 
 					PresencePrediction presencePrediction = new PresencePrediction();
 					presencePrediction.setRoom(room);
@@ -110,8 +101,8 @@ public class AnalysisThread extends Thread {
 					presencePrediction.setEndTime(endTime);
 
 					intervalsPredictions.add(presencePrediction);
-				}
 			}
+			
 
 			if (values.get(i).getValue() == 1 && presence == true && i == 0) {
 
