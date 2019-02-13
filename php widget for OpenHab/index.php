@@ -28,7 +28,7 @@
     $end = strtotime($finishStr);
 
     $data['rows'][] = array('c' => array(
-        array('v' => $row['room']),
+        array('v' => 'Predicted presences'),
         array('v' => 'Date(' . Date("0, 0, 0, H, i, s", $start) . ')'),
         array('v' => 'Date(' . Date("0, 0, 0, H, i, s", $end) . ')')
     ));
