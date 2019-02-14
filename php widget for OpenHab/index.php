@@ -84,10 +84,9 @@ if (isset($_GET['room'])) {
               maxValue: new Date(0, 0, 0, 24, 0, 0),
               format: 'HH:mm'
             },
-            colors: ['red', 'blue', 'green', 'orange'],
+            colors: ['blue', 'red', 'green', 'orange'],
             timeline: { showRowLabels: true, colorByRowLabel: true },
-            backgroundColor: 'lightgray',
-            height: 200
+            backgroundColor: 'white'
           };
 
           chart.draw(data, options);
