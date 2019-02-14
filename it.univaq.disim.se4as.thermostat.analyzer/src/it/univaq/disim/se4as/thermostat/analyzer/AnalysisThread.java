@@ -80,7 +80,7 @@ public class AnalysisThread extends Thread {
 		Timestamp endTime = null;
 
 		Boolean presence = false;
-		Boolean first = false;
+		Boolean secondWeek = false;
 		int firstDay = 0;
 		
 		PresencePrediction presencePredictiontemp = null;
@@ -89,16 +89,17 @@ public class AnalysisThread extends Thread {
 
 			if (values.get(i).getValue() == 1 && presence == false) {
 				presence = true;
-
+				secondWeek = false;
 				startTime = values.get(i).getTimestamp();
 			}
 
-			if (values.get(i).getValue() == 0 && presence == true && first == false) {
+			if (values.get(i).getValue() == 0 && presence == true && secondWeek == false) {
 				presence = false;
+				secondWeek = true;
 				Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 				calendar.setTime(values.get(i).getTimestamp());
 				firstDay = calendar.get(Calendar.DAY_OF_YEAR);
-				first = true;
+
 				endTime = values.get(i).getTimestamp();
 
 				presencePredictiontemp = new PresencePrediction();
@@ -110,15 +111,13 @@ public class AnalysisThread extends Thread {
 				intervalsPredictions.add(presencePredictiontemp);
 			}
 
-			if (values.get(i).getValue() == 0 && first == true) {
+			if (values.get(i).getValue() == 0 && presence == false && secondWeek == true) {
+				
 				Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 				calendar.setTime(values.get(i).getTimestamp());
 				int secondDay = calendar.get(Calendar.DAY_OF_YEAR);
 				
-				first = false;
-				
 				if (secondDay != firstDay) {
-					presence = false;
 					
 					endTime = values.get(i).getTimestamp();
 
@@ -126,6 +125,8 @@ public class AnalysisThread extends Thread {
 					presencePredictiontemp.setDay(day.toString());
 					presencePredictiontemp.setStartTime(startTime);
 					presencePredictiontemp.setEndTime(endTime);
+					
+					secondWeek = false;
 
 				}
 			}
