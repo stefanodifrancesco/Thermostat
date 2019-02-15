@@ -1,58 +1,65 @@
 <?php
-  $dbhost = 'localhost:3306';
-  $dbuser = 'se4as';
-  $dbpass = 'se4as';
-  $conn = mysqli_connect($dbhost, $dbuser, $dbpass);
-   
-  if(! $conn ){
-    die('Could not connect: ' . mysqli_error());
-  }
-         
-  $data = array(
-    'cols' => array(
-      array('type' => 'string', 'label' => 'room'),
-      array('type' => 'date', 'label' => 'starts'),
-      array('type' => 'date', 'label' => 'finish')
-    ),
-    'rows' => array()
-    );
 
-  $result = mysqli_query($conn, "SELECT * FROM se4as.presences WHERE day = DAYNAME(NOW()) AND room = \"" . $_GET['room'] . "\"");
+if (isset($_GET['room'])) {
+	$room = $_GET['room'];
 
+	$dbhost = 'localhost:3306';
+	$dbuser = 'se4as';
+	$dbpass = 'se4as';
+	$conn = mysqli_connect($dbhost, $dbuser, $dbpass);
+
+	if(! $conn ){
+		die('Could not connect: ' . mysqli_error());
+	}
+
+	$data = array(
+		'cols' => array(
+			array('type' => 'string', 'label' => 'room'),
+			array('type' => 'date', 'label' => 'starts'),
+			array('type' => 'date', 'label' => 'finish')
+		),
+		'rows' => array()
+	);
+
+	$result = mysqli_query($conn, "SELECT * FROM se4as.presences WHERE day = DAYNAME(NOW()) AND room = \"" . $room . "\"");
+
+
+	while($row = mysqli_fetch_array($result)) {
+
+		$startStr = $row['start'];
+		$finishStr = $row['end'];
+
+		$start = strtotime($startStr);
+		$end = strtotime($finishStr);
+
+		$data['rows'][] = array('c' => array(
+			array('v' => 'Predicted presences'),
+			array('v' => 'Date(1899, 11, 31, ' . Date("G, i", $start) . ')'),
+			array('v' => 'Date(1899, 11, 31, ' . Date("G, i", $end) . ')')
+		));
+
+	}
+
+	$result = mysqli_query($conn, "SELECT * FROM se4as.today_presence WHERE day = DAYNAME(NOW()) AND room = \"" . $room . "\"");
+
+	while($row = mysqli_fetch_array($result)) {
+
+		$startStr = $row['start'];
+		$finishStr = $row['end'];
+
+		$start = strtotime($startStr);
+		$end = strtotime($finishStr);
+
+		$data['rows'][] = array('c' => array(
+			array('v' => 'Today presences'),
+			array('v' => 'Date(1899, 11, 31, ' . Date("G, i", $start) . ')'),
+			array('v' => 'Date(1899, 11, 31, ' . Date("G, i", $end) . ')')
+		));
+	}
+} else {
+	echo 'Missing input parameter. Add ?room=YOUR_ROOM to the URL';
+}
   
-  while($row = mysqli_fetch_array($result)) {
-
-    $startStr = $row['start'];
-    $finishStr = $row['end'];
-
-    $start = strtotime($startStr);
-    $end = strtotime($finishStr);
-
-    $data['rows'][] = array('c' => array(
-        array('v' => 'Predicted presences'),
-        array('v' => 'Date(' . Date("0, 0, 0, H, i, s", $start) . ')'),
-        array('v' => 'Date(' . Date("0, 0, 0, H, i, s", $end) . ')')
-    ));
-
-  }
-
-  $result = mysqli_query($conn, "SELECT * FROM se4as.today_presences WHERE day = DAYNAME(NOW()) AND room = \"" . $_GET['room'] . "\"");
-
-  while($row = mysqli_fetch_array($result)) {
-
-    $startStr = $row['start'];
-    $finishStr = $row['end'];
-
-    $start = strtotime($startStr);
-    $end = strtotime($finishStr);
-
-    $data['rows'][] = array('c' => array(
-        array('v' => 'Today presences'),
-        array('v' => 'Date(' . Date("0, 0, 0, H, i, s", $start) . ')'),
-        array('v' => 'Date(' . Date("0, 0, 0, H, i, s", $end) . ')')
-    ));
-
-  }
 ?>
 
 <html>
@@ -73,12 +80,13 @@
 
           var options = {
             hAxis: {
+              minValue: new Date(0, 0, 0, 0, 0, 0),
+              maxValue: new Date(0, 0, 0, 24, 0, 0),
               format: 'HH:mm'
             },
-            colors: ['red', 'blue', 'green', 'orange'],
+            colors: ['blue', 'red', 'green', 'orange'],
             timeline: { showRowLabels: true, colorByRowLabel: true },
-            backgroundColor: 'lightgray',
-            height: 200
+            backgroundColor: 'white'
           };
 
           chart.draw(data, options);
